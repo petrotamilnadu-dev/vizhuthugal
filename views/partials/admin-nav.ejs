@@ -1,0 +1,21 @@
+<header class="admin-header">
+  <div class="container admin-header-inner">
+    <a href="/admin" class="brand">
+      <img src="/static/images/logo-ta.png" alt="logo" class="brand-logo">
+      <span class="brand-text">Admin</span>
+    </a>
+    <nav class="admin-nav">
+      <a href="/admin" class="<%= active === 'articles' ? 'active' : '' %>">செய்திகள்</a>
+      <a href="/admin/homepage-order" class="<%= active === 'order' ? 'active' : '' %>">முகப்பு வரிசை</a>
+      <a href="/admin/banners" class="<%= active === 'banners' ? 'active' : '' %>">Banner Ads</a>
+      <a href="/admin/categories" class="<%= active === 'categories' ? 'active' : '' %>">பிரிவுகள்</a>
+      <a href="/admin/social" class="<%= active === 'social' ? 'active' : '' %>">Social Media</a>
+      <a href="/admin/preview" class="<%= active === 'preview' ? 'active' : '' %>">Preview</a>
+      <a href="/admin/password" class="<%= active === 'password' ? 'active' : '' %>">கடவுச்சொல்</a>
+      <a href="/" target="_blank">தளத்தைப் பார்க்க</a>
+      <form method="post" action="/admin/logout" style="display:inline">
+        <button type="submit" class="link-logout">வெளியேறு</button>
+      </form>
+    </nav>
+  </div>
+</header>

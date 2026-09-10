@@ -1,0 +1,12 @@
+<% if (banner) { %>
+  <div class="banner-slot-public">
+    <span class="banner-label">Advertisement</span>
+    <% if (banner.link) { %>
+      <a href="<%= banner.link %>" target="_blank" rel="noopener">
+        <img src="<%= banner.image %>" alt="Advertisement">
+      </a>
+    <% } else { %>
+      <img src="<%= banner.image %>" alt="Advertisement">
+    <% } %>
+  </div>
+<% } %>

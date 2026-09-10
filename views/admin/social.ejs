@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <%- include('../partials/head', { pageTitle: 'Social Media' }) %>
+</head>
+<body class="admin-body">
+  <%- include('../partials/admin-nav', { active: 'social' }) %>
+
+  <main class="container admin-main">
+    <h1>Social Media Settings</h1>
+    <% if (saved) { %><div class="alert alert-success"><%= saved %></div><% } %>
+
+    <form method="post" action="/admin/social" class="admin-form" style="max-width:600px">
+      <h2 class="admin-subheading">பக்க இணைப்புகள் (Page Links)</h2>
+      <label>Instagram Page URL</label>
+      <input type="text" name="instagram_url" value="<%= instagram_url %>" placeholder="https://www.instagram.com/yourpage/">
+
+      <label>Facebook Page URL</label>
+      <input type="text" name="facebook_url" value="<%= facebook_url %>" placeholder="https://www.facebook.com/yourpage">
+
+      <label>YouTube Channel URL</label>
+      <input type="text" name="youtube_url" value="<%= youtube_url %>" placeholder="https://www.youtube.com/@yourchannel">
+
+      <p class="hint">இந்த மூன்று லிங்குகளும் menu bar-க்கு கீழே icon-ஆக காட்டப்படும். Icon click பண்ணா அந்த page open ஆகும்.</p>
+
+      <hr class="divider">
+
+      <h2 class="admin-subheading">Instagram Auto-Embed (Video Feed)</h2>
+      <% if (ig_user_present) { %>
+        <div class="alert alert-success">
+          Instagram token already connected<% if (ig_token_saved_at) { %> (last saved: <%= ig_token_saved_at %>)<% } %>.
+          Puthusa token venumna kீழே type panni update pannunga.
+        </div>
+      <% } else { %>
+        <div class="alert alert-error">
+          Innum Instagram access token connect pannala. Athanaala main page-la video feed innum embed aagalaiya.
+        </div>
+      <% } %>
+
+      <label>Instagram Access Token</label>
+      <input type="text" name="ig_access_token" placeholder="<%= ig_user_present ? 'already saved — replace panna mattum type pannunga' : 'paste your long-lived access token here' %>">
+      <p class="hint">
+        Idha eppadi generate panradhu-nu keezha "Instagram embed setup" page-la step-by-step irukku.
+        Token save panna, main page-la ungal latest Instagram video/reels automatic-ah தோன்றும் —
+        click pannana andha video inga-yே (site-லேயே) play aagum.
+      </p>
+
+      <button type="submit" class="btn btn-primary">சேமி</button>
+    </form>
+  </main>
+</body>
+</html>

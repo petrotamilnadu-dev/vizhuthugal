@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <%- include('../partials/head', { pageTitle: 'Dashboard' }) %>
+</head>
+<body class="admin-body">
+  <%- include('../partials/admin-nav', { active: 'articles' }) %>
+
+  <main class="container admin-main">
+    <div class="admin-header-row">
+      <h1>செய்திகள் (<%= articles.length %>)</h1>
+      <div class="admin-header-actions">
+        <a href="/admin/homepage-order" class="btn btn-secondary">முகப்பு வரிசை மாற்ற</a>
+        <a href="/admin/articles/new" class="btn btn-primary">+ புதிய செய்தி</a>
+      </div>
+    </div>
+
+    <% if (articles.length === 0) { %>
+      <div class="empty-state"><p>இன்னும் செய்திகள் இல்லை. மேலே உள்ள பொத்தானை அழுத்தி முதல் செய்தியைச் சேர்க்கவும்.</p></div>
+    <% } else { %>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>தலைப்பு</th>
+            <th>பிரிவு</th>
+            <th>நிலை</th>
+            <th>பார்வைகள்</th>
+            <th>தேதி</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% articles.forEach(function(a) { %>
+            <tr>
+              <td><a href="/article/<%= a.slug %>" target="_blank"><%= a.title %></a></td>
+              <td><%= a.category_name || '-' %></td>
+              <td>
+                <% if (a.published) { %><span class="badge badge-live">வெளியிடப்பட்டது</span>
+                <% } else { %><span class="badge badge-draft">வரைவு</span><% } %>
+              </td>
+              <td><%= a.views %></td>
+              <td><%= new Date(a.created_at).toLocaleDateString('ta-IN') %></td>
+              <td class="admin-row-actions">
+                <a href="/admin/articles/<%= a.id %>/edit">திருத்த</a>
+                <form method="post" action="/admin/articles/<%= a.id %>/delete" onsubmit="return confirm('இந்த செய்தியை நீக்கவா?')">
+                  <button type="submit" class="link-danger">நீக்க</button>
+                </form>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } %>
+  </main>
+</body>
+</html>

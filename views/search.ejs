@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <%- include('partials/head', { pageTitle: 'தேடல் முடிவுகள்' }) %>
+</head>
+<body>
+  <%- include('partials/header', { q }) %>
+
+  <main class="container">
+    <h1 class="section-title">"<%= q %>" க்கான தேடல் முடிவுகள்</h1>
+    <% if (articles.length === 0) { %>
+      <div class="empty-state"><p>எந்த செய்தியும் கிடைக்கவில்லை.</p></div>
+    <% } else { %>
+      <div class="article-grid">
+        <% articles.forEach(function(a) { %>
+          <%- include('partials/article-card', { a }) %>
+        <% }); %>
+      </div>
+    <% } %>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

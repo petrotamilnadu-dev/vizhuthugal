@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <%- include('../partials/head', { pageTitle: 'Preview' }) %>
+</head>
+<body class="admin-body">
+  <%- include('../partials/admin-nav', { active: 'preview' }) %>
+
+  <main class="container admin-main">
+    <h1>Live Preview</h1>
+    <p class="hint">முகப்புப்பக்கம் Mobile / Tablet / PC-ல எப்படி தெரியும்-ன்னு இங்க பாக்கலாம். Order மாத்தினது, banner upload பண்ணது எல்லாம் இங்க உடனே தெரியும் (refresh பண்ணா போதும்).</p>
+
+    <div class="device-toggle">
+      <button type="button" class="device-btn active" data-width="375">Mobile</button>
+      <button type="button" class="device-btn" data-width="768">Tablet</button>
+      <button type="button" class="device-btn" data-width="100%">PC</button>
+      <button type="button" class="btn btn-secondary" id="refreshPreview">&#8635; Refresh</button>
+    </div>
+
+    <div class="preview-frame-wrap">
+      <iframe id="previewFrame" src="/" class="preview-frame" style="width: 375px;"></iframe>
+    </div>
+  </main>
+
+  <script>
+    const frame = document.getElementById('previewFrame');
+    document.querySelectorAll('.device-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const w = btn.dataset.width;
+        frame.style.width = w === '100%' ? '100%' : w + 'px';
+      });
+    });
+    document.getElementById('refreshPreview').addEventListener('click', function () {
+      frame.src = frame.src;
+    });
+  </script>
+</body>
+</html>

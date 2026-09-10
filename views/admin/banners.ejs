@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <%- include('../partials/head', { pageTitle: 'Banner Ads' }) %>
+</head>
+<body class="admin-body">
+  <%- include('../partials/admin-nav', { active: 'banners' }) %>
+
+  <main class="container admin-main">
+    <h1>Banner Advertisement</h1>
+    <% if (saved) { %><div class="alert alert-success"><%= saved %></div><% } %>
+    <p class="hint">ஒவ்வொரு இடத்திற்கும் (slot) சொந்தமா banner image upload பண்ணலாம்,
+      click பண்ணா எங்க போகணும்-ன்னு link கொடுக்கலாம், active/inactive ஆக்கலாம்.
+      Sizeoda படம் upload பண்ணா நல்லா தெரியும் — கீழே ஒவ்வொரு slot-க்கும்
+      recommended size கொடுத்திருக்கேன்.</p>
+
+    <form method="post" action="/admin/banners" enctype="multipart/form-data" class="admin-form">
+      <% slots.forEach(function(slot) { %>
+        <div class="banner-slot">
+          <h2 class="admin-subheading"><%= slot.label %></h2>
+          <p class="hint">பரிந்துரைக்கப்படும் அளவு: <strong><%= slot.size %></strong> (PC/Tab/Mobile எல்லாத்திலும் தானாகவே scale ஆகும்)</p>
+
+          <% if (slot.image) { %>
+            <img src="<%= slot.image %>" alt="current banner" class="current-image-preview banner-preview">
+          <% } else { %>
+            <div class="banner-empty">இன்னும் banner upload பண்ணல</div>
+          <% } %>
+
+          <label>Banner Image <% if (slot.image) { %>(மாற்ற வேண்டுமானால் மட்டும் புதிய படம் தேர்வு செய்யவும்)<% } %></label>
+          <input type="file" name="banner_<%= slot.key %>" accept="image/*">
+
+          <label>Click பண்ணா எந்த page-க்கு போகணும் (Link URL)</label>
+          <input type="text" name="link_<%= slot.key %>" value="<%= slot.link %>" placeholder="https://...">
+
+          <label class="checkbox-row" style="margin:12px 0 0">
+            <input type="checkbox" name="active_<%= slot.key %>" <%= slot.active ? 'checked' : '' %>> இந்த banner-ஐ site-ல காட்டு (Active)
+          </label>
+        </div>
+        <hr class="divider">
+      <% }); %>
+
+      <button type="submit" class="btn btn-primary">சேமி</button>
+    </form>
+  </main>
+</body>
+</html>

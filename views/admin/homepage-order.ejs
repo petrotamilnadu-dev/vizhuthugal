@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <%- include('../partials/head', { pageTitle: 'முகப்பு வரிசை' }) %>
+</head>
+<body class="admin-body">
+  <%- include('../partials/admin-nav', { active: 'order' }) %>
+
+  <main class="container admin-main">
+    <h1>முகப்பு வரிசை (Homepage Order)</h1>
+    <p class="hint">
+      இந்த வரிசைப்படி தான் முகப்புப்பக்கத்தில் செய்திகள் காட்டப்படும்:
+      <strong>1வது</strong> = பெரிய முதன்மை செய்தி, <strong>2, 3</strong> = பக்கத்து சிறிய செய்திகள்,
+      மீதமுள்ளவை கீழே grid-ல். &#9650;/&#9660; பொத்தானை அழுத்தி வரிசையை மாற்றலாம்.
+      புதிதாக சேர்க்கும் செய்தி தானாகவே 1வது இடத்திற்கு வரும்.
+    </p>
+
+    <% if (articles.length === 0) { %>
+      <div class="empty-state"><p>வெளியிடப்பட்ட செய்திகள் இல்லை.</p></div>
+    <% } else { %>
+      <ol class="order-list">
+        <% articles.forEach(function(a, i) { %>
+          <li class="order-item">
+            <span class="order-rank"><%= i + 1 %></span>
+            <div class="order-thumb">
+              <% if (a.image) { %><img src="<%= a.image %>" alt=""><% } else { %><div class="card-img-placeholder"></div><% } %>
+            </div>
+            <div class="order-text">
+              <strong><%= a.title %></strong>
+              <span class="order-meta"><%= a.category_name || '-' %> &middot; <%= new Date(a.created_at).toLocaleDateString('ta-IN') %></span>
+            </div>
+            <div class="order-actions">
+              <form method="post" action="/admin/homepage-order/move">
+                <input type="hidden" name="id" value="<%= a.id %>">
+                <input type="hidden" name="direction" value="up">
+                <button type="submit" class="icon-btn-light" <%= i === 0 ? 'disabled' : '' %> aria-label="Move up">&#9650;</button>
+              </form>
+              <form method="post" action="/admin/homepage-order/move">
+                <input type="hidden" name="id" value="<%= a.id %>">
+                <input type="hidden" name="direction" value="down">
+                <button type="submit" class="icon-btn-light" <%= i === articles.length - 1 ? 'disabled' : '' %> aria-label="Move down">&#9660;</button>
+              </form>
+            </div>
+          </li>
+        <% }); %>
+      </ol>
+    <% } %>
+  </main>
+</body>
+</html>

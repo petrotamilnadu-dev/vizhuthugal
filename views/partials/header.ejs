@@ -1,0 +1,50 @@
+<header class="site-header" id="siteHeader">
+  <div class="container header-inner">
+    <a href="/" class="brand">
+      <img src="/static/images/logo-ta.png" alt="<%= SITE_NAME %>" class="brand-logo">
+      <div class="brand-copy">
+        <span class="brand-text-rotate">
+          <span class="brand-name brand-name-ta"><%= SITE_NAME %></span>
+          <span class="brand-name brand-name-en"><%= SITE_NAME_EN %></span>
+        </span>
+        <span class="brand-tagline"><%= SITE_TAGLINE %></span>
+      </div>
+    </a>
+
+    <nav class="pill-nav" id="navList">
+      <a href="/" class="pill">முகப்பு</a>
+      <% categories.forEach(function(c) { %>
+        <a href="/category/<%= c.slug %>" class="pill"><%= c.name %></a>
+      <% }); %>
+    </nav>
+
+    <div class="header-actions">
+      <button class="icon-btn" id="searchToggle" aria-label="Search">&#128269;</button>
+      <button class="icon-btn nav-toggle" id="navToggle" aria-label="Menu">&#9776;</button>
+    </div>
+  </div>
+
+  <form action="/search" method="get" class="search-panel" id="searchPanel">
+    <div class="container search-panel-inner">
+      <input type="text" name="q" placeholder="என்ன தேடுகிறீர்கள்?" value="<%= typeof q !== 'undefined' ? q : '' %>" autofocus>
+      <button type="submit">தேடு</button>
+    </div>
+  </form>
+</header>
+<%- include('social-bar') %>
+<script>
+  document.getElementById('navToggle').addEventListener('click', function () {
+    document.getElementById('navList').classList.toggle('open');
+  });
+  var searchToggle = document.getElementById('searchToggle');
+  var searchPanel = document.getElementById('searchPanel');
+  searchToggle.addEventListener('click', function () {
+    searchPanel.classList.toggle('open');
+    if (searchPanel.classList.contains('open')) {
+      searchPanel.querySelector('input').focus();
+    }
+  });
+  window.addEventListener('scroll', function () {
+    document.getElementById('siteHeader').classList.toggle('scrolled', window.scrollY > 10);
+  });
+</script>

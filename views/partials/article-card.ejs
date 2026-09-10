@@ -1,0 +1,15 @@
+<a href="/article/<%= a.slug %>" class="article-card">
+  <div class="card-img">
+    <% if (a.image) { %>
+      <img src="<%= a.image %>" alt="<%= a.title %>" loading="lazy">
+    <% } else { %>
+      <div class="card-img-placeholder"></div>
+    <% } %>
+    <% if (a.category_name) { %><span class="card-tag"><%= a.category_name %></span><% } %>
+  </div>
+  <div class="card-body">
+    <h3><%= a.title %></h3>
+    <% if (a.summary) { %><p><%= a.summary %></p><% } %>
+    <time><%= new Date(a.created_at).toLocaleDateString('ta-IN', { year: 'numeric', month: 'short', day: 'numeric' }) %></time>
+  </div>
+</a>

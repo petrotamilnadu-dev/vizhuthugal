@@ -1,0 +1,11 @@
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <img src="/static/images/logo-en.png" alt="<%= SITE_NAME_EN %>" class="footer-logo">
+    <p>&copy; <%= new Date().getFullYear() %> <%= SITE_NAME_EN %>. All rights reserved.</p>
+    <% if (isAdmin) { %>
+      <p><a href="/admin">Admin Dashboard</a></p>
+    <% } else { %>
+      <p><a href="/admin/login">Admin Login</a></p>
+    <% } %>
+  </div>
+</footer>

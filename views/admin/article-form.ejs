@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <%- include('../partials/head', { pageTitle: article ? 'செய்தி திருத்த' : 'புதிய செய்தி' }) %>
+</head>
+<body class="admin-body">
+  <%- include('../partials/admin-nav', { active: 'articles' }) %>
+
+  <main class="container admin-main">
+    <h1><%= article ? 'செய்தி திருத்த' : 'புதிய செய்தி சேர்க்க' %></h1>
+    <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+    <form method="post" enctype="multipart/form-data"
+          action="<%= article && article.id ? '/admin/articles/' + article.id + '/edit' : '/admin/articles/new' %>"
+          class="admin-form">
+
+      <label>தலைப்பு *</label>
+      <input type="text" name="title" required value="<%= article && article.title ? article.title : '' %>">
+
+      <label>சுருக்கம் (Summary)</label>
+      <textarea name="summary" rows="2"><%= article && article.summary ? article.summary : '' %></textarea>
+
+      <label>பிரிவு</label>
+      <select name="category_id">
+        <option value="">-- தேர்வு செய்யவும் --</option>
+        <% categories.forEach(function(c) { %>
+          <option value="<%= c.id %>" <%= article && String(article.category_id) === String(c.id) ? 'selected' : '' %>><%= c.name %></option>
+        <% }); %>
+      </select>
+
+      <label>படம் <% if (article && article.image) { %>(தற்போதைய படம் கீழே)<% } %></label>
+      <input type="file" name="image" accept="image/*">
+      <% if (article && article.image) { %>
+        <img src="<%= article.image %>" alt="current" class="current-image-preview">
+      <% } %>
+
+      <label>உள்ளடக்கம் *</label>
+      <textarea name="content" rows="14" required><%= article && article.content ? article.content : '' %></textarea>
+      <p class="hint">ஒவ்வொரு பத்தியையும் காலி வரி (blank line) மூலம் பிரிக்கவும்.</p>
+
+      <div class="checkbox-row">
+        <label><input type="checkbox" name="published" <%= !article || article.published ? 'checked' : '' %>> வெளியிடப்பட்டது</label>
+      </div>
+      <p class="hint">Homepage-ல் எந்த இடத்தில் இந்த செய்தி வரணும் என்பதை
+        <a href="/admin/homepage-order">முகப்பு வரிசை</a> பக்கத்தில் மாற்றலாம்
+        (புதிய செய்தி தானாகவே மேலே வரும்).</p>
+
+      <button type="submit" class="btn btn-primary"><%= article ? 'மாற்றங்களை சேமி' : 'செய்தியை வெளியிடு' %></button>
+      <a href="/admin" class="btn btn-secondary">ரத்து செய்</a>
+    </form>
+  </main>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <%- include('../partials/head', { pageTitle: 'Admin Login' }) %>
+</head>
+<body class="admin-body">
+  <div class="admin-login-wrap">
+    <form class="admin-login-card" method="post" action="/admin/login">
+      <img src="/static/images/logo-ta.png" alt="logo" class="admin-login-logo">
+      <h1>Admin Login</h1>
+      <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+      <label>Username</label>
+      <input type="text" name="username" required autofocus>
+      <label>Password</label>
+      <input type="password" name="password" required>
+      <button type="submit" class="btn btn-primary">உள்நுழைய</button>
+      <a href="/" class="back-link">&larr; தளத்திற்குத் திரும்ப</a>
+    </form>
+  </div>
+</body>
+</html>

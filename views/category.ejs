@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <%- include('partials/head', { pageTitle: category.name }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="container">
+    <h1 class="section-title"><%= category.name %></h1>
+    <% if (articles.length === 0) { %>
+      <div class="empty-state">
+        <p>இந்த பிரிவில் இன்னும் செய்திகள் இல்லை.</p>
+      </div>
+    <% } else { %>
+      <div class="article-grid">
+        <% articles.forEach(function(a) { %>
+          <%- include('partials/article-card', { a }) %>
+        <% }); %>
+      </div>
+    <% } %>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

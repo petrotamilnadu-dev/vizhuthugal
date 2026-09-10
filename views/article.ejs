@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <%- include('partials/head', { pageTitle: article.title }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="container article-page">
+    <article>
+      <% if (article.category_name) { %>
+        <a href="/category/<%= article.category_slug %>" class="card-tag"><%= article.category_name %></a>
+      <% } %>
+      <h1><%= article.title %></h1>
+      <div class="article-meta">
+        <time><%= new Date(article.created_at).toLocaleDateString('ta-IN', { year: 'numeric', month: 'long', day: 'numeric' }) %></time>
+        <span>&middot;</span>
+        <span><%= article.views %> பார்வைகள்</span>
+      </div>
+      <% if (article.image) { %>
+        <img class="article-image" src="<%= article.image %>" alt="<%= article.title %>">
+      <% } %>
+      <div class="article-content">
+        <%- toParagraphs(article.content) %>
+      </div>
+    </article>
+
+    <%- include('partials/banner', { banner: banner }) %>
+
+    <% if (related.length) { %>
+      <h2 class="section-title">தொடர்புடைய செய்திகள்</h2>
+      <div class="article-grid">
+        <% related.forEach(function(a) { %>
+          <%- include('partials/article-card', { a }) %>
+        <% }); %>
+      </div>
+    <% } %>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

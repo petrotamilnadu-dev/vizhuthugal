@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <%- include('../partials/head', { pageTitle: 'பிரிவுகள்' }) %>
+</head>
+<body class="admin-body">
+  <%- include('../partials/admin-nav', { active: 'categories' }) %>
+
+  <main class="container admin-main">
+    <h1>பிரிவுகள் (Categories)</h1>
+
+    <form method="post" action="/admin/categories/new" class="inline-form">
+      <input type="text" name="name" placeholder="புதிய பிரிவு பெயர்" required>
+      <button type="submit" class="btn btn-primary">சேர்</button>
+    </form>
+
+    <table class="admin-table">
+      <thead><tr><th>பெயர்</th><th>Slug</th><th></th></tr></thead>
+      <tbody>
+        <% categories.forEach(function(c) { %>
+          <tr>
+            <td><%= c.name %></td>
+            <td><%= c.slug %></td>
+            <td>
+              <form method="post" action="/admin/categories/<%= c.id %>/delete" onsubmit="return confirm('நீக்கவா? (செய்திகள் இருந்தால் நீக்க முடியாது)')">
+                <button type="submit" class="link-danger">நீக்க</button>
+              </form>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>
