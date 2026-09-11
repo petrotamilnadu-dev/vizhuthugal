@@ -196,6 +196,21 @@ img { max-width: 100%; display: block; }
 .instagram-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-bottom: 30px; }
 .instagram-grid .instagram-media { width: 100% !important; margin: 0 !important; border-radius: 16px; overflow: hidden; }
 
+/* ===== Videos page (YouTube) ===== */
+.video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin: 24px 0 40px; }
+.video-card { background: var(--paper-raised); border-radius: 16px; overflow: hidden; box-shadow: 0 1px 3px rgba(23,35,61,.06); }
+.video-thumb { position: relative; aspect-ratio: 16/9; background: var(--line); cursor: pointer; overflow: hidden; }
+.video-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease; }
+.video-card:hover .video-thumb img { transform: scale(1.06); }
+.video-thumb .play-btn {
+  position: absolute; inset: 0; margin: auto; width: 54px; height: 54px; border-radius: 50%;
+  background: rgba(15,24,48,.75); color: #fff; display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; pointer-events: none;
+}
+.video-card h3 { font-size: .95rem; margin: 0; padding: 12px 14px 16px; line-height: 1.4; }
+.video-embed { position: relative; aspect-ratio: 16/9; }
+.video-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
 /* ===== Admin form extras ===== */
 .admin-subheading { font-size: 1.02rem; margin: 8px 0 4px; }
 .divider { border: 0; border-top: 1px solid var(--line); margin: 28px 0; }
@@ -300,6 +315,7 @@ img { max-width: 100%; display: block; }
 @media (max-width: 900px) {
   .article-grid { grid-template-columns: repeat(2, 1fr); }
   .instagram-grid { grid-template-columns: repeat(2, 1fr); }
+  .video-grid { grid-template-columns: repeat(2, 1fr); }
   .hero-grid { grid-template-columns: 1fr; }
   .hero-main { min-height: 300px; }
   .hero-side { flex-direction: row; }
@@ -307,6 +323,7 @@ img { max-width: 100%; display: block; }
 @media (max-width: 640px) {
   .article-grid { grid-template-columns: 1fr; }
   .instagram-grid { grid-template-columns: 1fr; }
+  .video-grid { grid-template-columns: 1fr; }
   .brand-copy { display: none; }
   .header-inner { flex-wrap: wrap; }
   .pill-nav {

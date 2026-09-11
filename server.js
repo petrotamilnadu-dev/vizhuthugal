@@ -7,7 +7,9 @@ const multer = require('multer');
 const bcrypt = require('bcryptjs');
 const slugify = require('slugify');
 const { db, UPLOADS_DIR, nextTopPosition } = require('./db');
-const { getSetting, setSetting, getLatestVideos } = require('./instagram');
+const { getSetting, setSetting } = require('./settings');
+const { getLatestVideos: getInstagramVideos } = require('./instagram');
+const { getLatestVideos: getYoutubeVideos } = require('./youtube');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -54,7 +56,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 8 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const ok = /jpeg|jpg|png|webp|gif/.test(file.mimetype);
     cb(ok ? null : new Error('படங்கள் மட்டுமே (jpg/png/webp/gif) அனுமதிக்கப்படும்'), ok);
@@ -122,7 +124,7 @@ app.get('/', async (req, res) => {
 
   let igVideos = [];
   try {
-    igVideos = await getLatestVideos(6);
+    igVideos = await getInstagramVideos(6);
   } catch (e) {
     console.error('[instagram] homepage fetch error:', e.message);
   }
@@ -147,6 +149,16 @@ app.get('/category/:slug', (req, res) => {
   `).all(category.id);
 
   res.render('category', { category, articles });
+});
+
+app.get('/videos', async (req, res) => {
+  let videos = [];
+  try {
+    videos = await getYoutubeVideos(24);
+  } catch (e) {
+    console.error('[youtube] /videos fetch error:', e.message);
+  }
+  res.render('videos', { videos });
 });
 
 app.get('/search', (req, res) => {
@@ -298,10 +310,33 @@ app.post('/admin/categories/new', requireAdmin, (req, res) => {
   const { name } = req.body;
   if (name && name.trim()) {
     const slug = makeCategorySlug(name.trim());
+    const maxRow = db.prepare('SELECT MAX(sort_order) AS m FROM categories').get();
+    const nextOrder = (maxRow.m === null ? 0 : maxRow.m) + 1;
     try {
-      db.prepare('INSERT INTO categories (name, slug, sort_order) VALUES (?, ?, ?)').run(name.trim(), slug, 999);
+      db.prepare('INSERT INTO categories (name, slug, sort_order) VALUES (?, ?, ?)').run(name.trim(), slug, nextOrder);
     } catch (e) { /* duplicate ignored */ }
   }
+  res.redirect('/admin/categories');
+});
+
+app.post('/admin/categories/:id/move', requireAdmin, (req, res) => {
+  const { direction } = req.body;
+  const ordered = db.prepare('SELECT id, sort_order FROM categories ORDER BY sort_order, name').all();
+  const idx = ordered.findIndex(c => String(c.id) === String(req.params.id));
+  if (idx === -1) return res.redirect('/admin/categories');
+
+  const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+  if (swapIdx < 0 || swapIdx >= ordered.length) return res.redirect('/admin/categories');
+
+  const a = ordered[idx];
+  const b = ordered[swapIdx];
+  const update = db.prepare('UPDATE categories SET sort_order = ? WHERE id = ?');
+  const swap = db.transaction(() => {
+    update.run(b.sort_order, a.id);
+    update.run(a.sort_order, b.id);
+  });
+  swap();
+
   res.redirect('/admin/categories');
 });
 
@@ -323,20 +358,26 @@ app.post('/admin/categories/:id/delete', requireAdmin, (req, res) => {
 });
 
 // ---- Social media & Instagram settings ----
-app.get('/admin/social', requireAdmin, (req, res) => {
+function socialSettingsView() {
   const tokenSavedAt = getSetting('ig_token_updated_at');
-  res.render('admin/social', {
+  return {
     instagram_url: getSetting('social_instagram_url', ''),
     facebook_url: getSetting('social_facebook_url', ''),
     youtube_url: getSetting('social_youtube_url', ''),
     ig_user_present: !!getSetting('ig_access_token'),
     ig_token_saved_at: tokenSavedAt ? new Date(parseInt(tokenSavedAt, 10)).toLocaleDateString('ta-IN') : null,
-    saved: null
-  });
+    youtube_api_key: getSetting('youtube_api_key', ''),
+    youtube_channel_id: getSetting('youtube_channel_id', ''),
+    yt_configured: !!(getSetting('youtube_api_key') && getSetting('youtube_channel_id'))
+  };
+}
+
+app.get('/admin/social', requireAdmin, (req, res) => {
+  res.render('admin/social', { ...socialSettingsView(), saved: null });
 });
 
 app.post('/admin/social', requireAdmin, (req, res) => {
-  const { instagram_url, facebook_url, youtube_url, ig_access_token } = req.body;
+  const { instagram_url, facebook_url, youtube_url, ig_access_token, youtube_api_key, youtube_channel_id } = req.body;
   setSetting('social_instagram_url', (instagram_url || '').trim());
   setSetting('social_facebook_url', (facebook_url || '').trim());
   setSetting('social_youtube_url', (youtube_url || '').trim());
@@ -344,16 +385,14 @@ app.post('/admin/social', requireAdmin, (req, res) => {
     setSetting('ig_access_token', ig_access_token.trim());
     setSetting('ig_token_updated_at', String(Date.now()));
   }
+  if (youtube_api_key && youtube_api_key.trim()) {
+    setSetting('youtube_api_key', youtube_api_key.trim());
+  }
+  if (youtube_channel_id && youtube_channel_id.trim()) {
+    setSetting('youtube_channel_id', youtube_channel_id.trim());
+  }
 
-  const tokenSavedAt = getSetting('ig_token_updated_at');
-  res.render('admin/social', {
-    instagram_url: getSetting('social_instagram_url', ''),
-    facebook_url: getSetting('social_facebook_url', ''),
-    youtube_url: getSetting('social_youtube_url', ''),
-    ig_user_present: !!getSetting('ig_access_token'),
-    ig_token_saved_at: tokenSavedAt ? new Date(parseInt(tokenSavedAt, 10)).toLocaleDateString('ta-IN') : null,
-    saved: 'சேமிக்கப்பட்டது'
-  });
+  res.render('admin/social', { ...socialSettingsView(), saved: 'சேமிக்கப்பட்டது' });
 });
 
 // ---- Homepage order (manual placement) ----
@@ -467,6 +506,31 @@ app.post('/admin/password', requireAdmin, (req, res) => {
 
 // 404
 app.use((req, res) => res.status(404).render('404'));
+
+// Central error handler — anything that throws in a route (including
+// Multer upload errors) lands here instead of showing Express's bare
+// "Internal Server Error" page.
+app.use((err, req, res, next) => {
+  console.error('[error]', err);
+
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).send(
+        'படம் அளவு 8MB-க்கு மேல் இருக்கிறது. சின்ன அளவு படத்தை (8MB-க்கு குறைவாக) மீண்டும் upload செய்யவும். ' +
+        '<a href="javascript:history.back()">பின் செல்ல</a>'
+      );
+    }
+    return res.status(400).send(
+      'படம் upload செய்வதில் சிக்கல்: ' + err.message + ' ' +
+      '<a href="javascript:history.back()">பின் செல்ல</a>'
+    );
+  }
+
+  res.status(500).send(
+    'ஏதோ தவறு நடந்தது. மீண்டும் முயற்சிக்கவும். ' +
+    '<a href="javascript:history.back()">பின் செல்ல</a>'
+  );
+});
 
 app.listen(PORT, () => {
   console.log(`Vizhuthugal Media running on port ${PORT}`);

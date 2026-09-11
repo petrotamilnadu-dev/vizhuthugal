@@ -105,6 +105,40 @@ Admin → **Preview** page-ல முகப்புப்பக்கம் ஒ
 பண்ணது/புதிய செய்தி சேர்த்தது எல்லாத்தையும் இங்க refresh பண்ணி
 உடனே பாக்கலாம்.
 
+## Menu order மாற்ற (Categories reorder)
+
+Admin → **பிரிவுகள்** page-ல் ஒவ்வொரு category-க்கும் ▲/▼ பொத்தான்
+இருக்கு — அழுத்தி menu bar order-ஐ மாத்தலாம். **முகப்பு** மற்றும்
+**வீடியோக்கள்** menu items எப்போதும் மேலே ஃபிக்ஸ்ட்-ஆ இருக்கும்
+(இவை reorder ஆகாது) — categories மட்டும் அதற்கு அடுத்து, நீங்க
+வைக்கிற order-ல வரும்.
+
+## வீடியோக்கள் menu (YouTube auto-embed)
+
+முகப்பு menu-ல "வீடியோக்கள்" nu ஒரு புதிய page இருக்கு — இதுல ஒரு
+grid-ல் ungal YouTube channel-oda latest uploads தானாகவே தோன்றும்.
+Video thumbnail click பண்ணா, **site-லேயே** (redirect ஆகாம) video
+play ஆகும்.
+
+Idha connect panna (free, code venaam, konjam setup):
+
+1. [console.cloud.google.com](https://console.cloud.google.com) -ல்
+   login பண்ணி ஒரு புதிய project create பண்ணுங்க.
+2. "APIs & Services" → "Library" → "YouTube Data API v3" தேடி
+   **Enable** பண்ணுங்க.
+3. "APIs & Services" → "Credentials" → "Create Credentials" →
+   **API Key** — இது உடனே generate ஆகும், copy பண்ணுங்க.
+4. Ungal YouTube channel-க்கு போய் → profile picture → "Your channel"
+   → "..." → "Share channel" → **"Copy channel ID"** (இது எப்போதும்
+   `UC` -ல் start ஆகும், `@VizhuthugalMedia` handle இல்ல).
+5. Admin → **Social Media** page-ல் "YouTube Video Feed" section-ல்
+   API Key மற்றும் Channel ID paste பண்ணி **சேமி** பண்ணுங்க.
+6. "வீடியோக்கள்" menu-ல் automatic-ah latest uploads தோன்றும்.
+
+Instagram-ஐ விட இது ரொம்ப simple — business account maathanum,
+manual app review காத்திருக்கணும் எதுவும் இல்ல, API key ஒண்ணு
+போதும்.
+
 ## Social media icons + Instagram auto-embed
 
 Menu bar-க்கு கீழே ஒரு thin strip-la Instagram/Facebook/YouTube icons
@@ -152,6 +186,8 @@ edilaavadhu stuck aana, screenshot vecha help pannuven.
 server.js          - routes (public + admin)
 db.js               - SQLite setup, default admin + categories seed
 instagram.js         - Instagram Graph API helper (settings, token refresh, media fetch)
+youtube.js            - YouTube Data API helper (latest channel uploads)
+settings.js            - shared key-value settings helper (used by instagram.js, youtube.js, banners)
 views/               - EJS templates (public pages + admin/*)
 public/              - CSS + logo images
 data/                - SQLite DB + uploaded images (local dev; on Render

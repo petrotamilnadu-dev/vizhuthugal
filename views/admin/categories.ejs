@@ -8,6 +8,12 @@
 
   <main class="container admin-main">
     <h1>பிரிவுகள் (Categories)</h1>
+    <p class="hint">
+      இந்த வரிசைப்படி தான் menu bar-ல் பிரிவுகள் காட்டப்படும். &#9650;/&#9660;
+      பொத்தானை அழுத்தி வரிசையை மாற்றலாம். <strong>முகப்பு</strong> மற்றும்
+      <strong>வீடியோக்கள்</strong> menu items எப்போதும் மேலே ஃபிக்ஸ்ட்-ஆ
+      இருக்கும் — இந்த பிரிவுகள் அதற்கு அடுத்து வரும்.
+    </p>
 
     <form method="post" action="/admin/categories/new" class="inline-form">
       <input type="text" name="name" placeholder="புதிய பிரிவு பெயர்" required>
@@ -15,10 +21,20 @@
     </form>
 
     <table class="admin-table">
-      <thead><tr><th>பெயர்</th><th>Slug</th><th></th></tr></thead>
+      <thead><tr><th></th><th>பெயர்</th><th>Slug</th><th></th></tr></thead>
       <tbody>
-        <% categories.forEach(function(c) { %>
+        <% categories.forEach(function(c, i) { %>
           <tr>
+            <td class="admin-row-actions">
+              <form method="post" action="/admin/categories/<%= c.id %>/move">
+                <input type="hidden" name="direction" value="up">
+                <button type="submit" class="icon-btn-light" <%= i === 0 ? 'disabled' : '' %> aria-label="Move up">&#9650;</button>
+              </form>
+              <form method="post" action="/admin/categories/<%= c.id %>/move">
+                <input type="hidden" name="direction" value="down">
+                <button type="submit" class="icon-btn-light" <%= i === categories.length - 1 ? 'disabled' : '' %> aria-label="Move down">&#9660;</button>
+              </form>
+            </td>
             <td><%= c.name %></td>
             <td><%= c.slug %></td>
             <td>

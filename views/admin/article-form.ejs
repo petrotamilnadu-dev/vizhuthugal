@@ -30,6 +30,7 @@
 
       <label>படம் <% if (article && article.image) { %>(தற்போதைய படம் கீழே)<% } %></label>
       <input type="file" name="image" accept="image/*">
+      <p class="hint">படம் அளவு 8MB-க்கு குறைவாக இருக்க வேண்டும். Phone camera photo பெரியதா இருந்தா, WhatsApp-ல் ஒருதடவை அனுப்பி அதை பயன்படுத்தினா size குறையும்.</p>
       <% if (article && article.image) { %>
         <img src="<%= article.image %>" alt="current" class="current-image-preview">
       <% } %>

@@ -28,6 +28,7 @@
 
           <label>Banner Image <% if (slot.image) { %>(மாற்ற வேண்டுமானால் மட்டும் புதிய படம் தேர்வு செய்யவும்)<% } %></label>
           <input type="file" name="banner_<%= slot.key %>" accept="image/*">
+          <p class="hint">படம் அளவு 8MB-க்கு குறைவாக இருக்க வேண்டும்.</p>
 
           <label>Click பண்ணா எந்த page-க்கு போகணும் (Link URL)</label>
           <input type="text" name="link_<%= slot.key %>" value="<%= slot.link %>" placeholder="https://...">

@@ -45,6 +45,30 @@
         click pannana andha video inga-yே (site-லேயே) play aagum.
       </p>
 
+      <hr class="divider">
+
+      <h2 class="admin-subheading">YouTube Video Feed ("வீடியோக்கள்" menu)</h2>
+      <% if (yt_configured) { %>
+        <div class="alert alert-success">YouTube channel already connected. Puthusa மாத்த வேண்டுமானால் கீழே update பண்ணுங்க.</div>
+      <% } else { %>
+        <div class="alert alert-error">Innum YouTube connect pannala. Athanaala "வீடியோக்கள்" menu page-la videos innum தெரியலை.</div>
+      <% } %>
+
+      <label>YouTube API Key</label>
+      <input type="text" name="youtube_api_key" value="<%= youtube_api_key %>" placeholder="AIzaSy...">
+      <p class="hint">
+        console.cloud.google.com-ல் ஒரு project create பண்ணி, "YouTube Data API v3" enable பண்ணி,
+        "Credentials" → "Create API Key" — idhu free, Instagram மாதிரி business account/manual approval
+        தேவை இல்லை, இந்த key கொடுத்தா போதும்.
+      </p>
+
+      <label>YouTube Channel ID</label>
+      <input type="text" name="youtube_channel_id" value="<%= youtube_channel_id %>" placeholder="UCxxxxxxxxxxxxxxxxxxxxxx">
+      <p class="hint">
+        Ungal channel-க்கு போய் → "..." (About) → "Share channel" → "Copy channel ID" —
+        idhu எப்போதும் "UC" nu start aagum (ungal channel URL-la irukra @VizhuthugalMedia handle idhu illa).
+      </p>
+
       <button type="submit" class="btn btn-primary">சேமி</button>
     </form>
   </main>

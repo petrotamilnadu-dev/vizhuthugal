@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <%- include('partials/head', { pageTitle: 'வீடியோக்கள்' }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="container">
+    <h1 class="section-title">வீடியோக்கள்</h1>
+
+    <% if (!videos || videos.length === 0) { %>
+      <div class="empty-state">
+        <p>இன்னும் வீடியோக்கள் இல்லை. Admin panel-ல் YouTube channel connect பண்ணினா இங்க தானாகவே தெரியும்.</p>
+      </div>
+    <% } else { %>
+      <div class="video-grid">
+        <% videos.forEach(function(v) { %>
+          <div class="video-card" data-video-id="<%= v.videoId %>">
+            <div class="video-thumb" onclick="vmPlayVideo(this)">
+              <% if (v.thumbnail) { %><img src="<%= v.thumbnail %>" alt="<%= v.title %>" loading="lazy"><% } else { %><div class="card-img-placeholder"></div><% } %>
+              <span class="play-btn">&#9658;</span>
+            </div>
+            <h3><%= v.title %></h3>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+  </main>
+
+  <%- include('partials/footer') %>
+
+  <script>
+    function vmPlayVideo(el) {
+      var card = el.closest('.video-card');
+      var id = card.getAttribute('data-video-id');
+      var wrap = document.createElement('div');
+      wrap.className = 'video-embed';
+      wrap.innerHTML = '<iframe src="https://www.youtube.com/embed/' + id + '?autoplay=1" ' +
+        'title="YouTube video" frameborder="0" ' +
+        'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" ' +
+        'allowfullscreen></iframe>';
+      el.replaceWith(wrap);
+    }
+  </script>
+</body>
+</html>

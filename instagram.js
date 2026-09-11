@@ -1,16 +1,4 @@
-const { db } = require('./db');
-
-function getSetting(key, fallback = null) {
-  const row = db.prepare('SELECT value FROM settings WHERE key = ?').get(key);
-  return row && row.value !== null && row.value !== '' ? row.value : fallback;
-}
-
-function setSetting(key, value) {
-  db.prepare(`
-    INSERT INTO settings (key, value) VALUES (?, ?)
-    ON CONFLICT(key) DO UPDATE SET value = excluded.value
-  `).run(key, value);
-}
+const { getSetting, setSetting } = require('./settings');
 
 let cache = { data: [], fetchedAt: 0 };
 const CACHE_TTL_MS = 30 * 60 * 1000; // success cache — 30 minutes
