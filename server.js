@@ -184,6 +184,20 @@ app.get('/videos', async (req, res) => {
   res.render('videos', { videos });
 });
 
+app.get('/rates', (req, res) => {
+  const gold = getSetting('rate_gold');
+  const silver = getSetting('rate_silver');
+  const updatedAt = getSetting('rate_updated_at');
+  res.render('rates', {
+    gold,
+    silver,
+    goldPavun: gold ? (parseFloat(gold) * 8).toLocaleString('en-IN') : null,
+    updated: updatedAt
+      ? new Date(updatedAt).toLocaleDateString('ta-IN', { day: 'numeric', month: 'long', year: 'numeric' })
+      : null
+  });
+});
+
 app.get('/search', (req, res) => {
   const q = (req.query.q || '').trim();
   let articles = [];

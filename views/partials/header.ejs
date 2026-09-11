@@ -11,18 +11,20 @@
       </div>
     </a>
 
+    <div class="header-actions">
+      <button class="icon-btn" id="searchToggle" aria-label="Search">&#128269;</button>
+    </div>
+  </div>
+
+  <div class="pill-nav-row">
     <nav class="pill-nav" id="navList">
       <a href="/" class="pill">முகப்பு</a>
       <a href="/videos" class="pill">வீடியோக்கள்</a>
+      <a href="/rates" class="pill pill-rate">&#128176; புதுச்சேரியில் தங்கம் வெள்ளி விலை விபரம்</a>
       <% categories.forEach(function(c) { %>
         <a href="/category/<%= c.slug %>" class="pill"><%= c.name %></a>
       <% }); %>
     </nav>
-
-    <div class="header-actions">
-      <button class="icon-btn" id="searchToggle" aria-label="Search">&#128269;</button>
-      <button class="icon-btn nav-toggle" id="navToggle" aria-label="Menu">&#9776;</button>
-    </div>
   </div>
 
   <form action="/search" method="get" class="search-panel" id="searchPanel">
@@ -34,9 +36,6 @@
 </header>
 <%- include('social-bar') %>
 <script>
-  document.getElementById('navToggle').addEventListener('click', function () {
-    document.getElementById('navList').classList.toggle('open');
-  });
   var searchToggle = document.getElementById('searchToggle');
   var searchPanel = document.getElementById('searchPanel');
   searchToggle.addEventListener('click', function () {

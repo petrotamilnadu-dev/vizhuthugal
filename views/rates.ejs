@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <%- include('partials/head', { pageTitle: 'தங்கம் வெள்ளி விலை' }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="container">
+    <h1 class="section-title">புதுச்சேரியில் இன்றைய தங்கம் &amp; வெள்ளி விலை</h1>
+
+    <% if (!gold && !silver) { %>
+      <div class="empty-state">
+        <p>இன்னும் rate update ஆகவில்லை. Admin panel-ல் rate போட்டதும் இங்க தெரியும்.</p>
+      </div>
+    <% } else { %>
+      <div class="rate-cards">
+        <% if (gold) { %>
+          <div class="rate-card rate-card-gold">
+            <span class="rate-card-label">தங்கம்</span>
+            <div class="rate-card-row"><span>1 கிராம்</span><strong>&#8377;<%= gold %></strong></div>
+            <div class="rate-card-row"><span>1 பவுன் (8 கிராம்)</span><strong>&#8377;<%= goldPavun %></strong></div>
+          </div>
+        <% } %>
+        <% if (silver) { %>
+          <div class="rate-card rate-card-silver">
+            <span class="rate-card-label">வெள்ளி</span>
+            <div class="rate-card-row"><span>1 கிராம்</span><strong>&#8377;<%= silver %></strong></div>
+          </div>
+        <% } %>
+      </div>
+      <% if (updated) { %>
+        <p class="rate-page-updated"><%= updated %> அன்று புதுப்பிக்கப்பட்டது</p>
+      <% } %>
+      <p class="hint">விலை தினமும் மாறுபடும். துல்லியமான விலைக்கு உங்கள் அருகிலுள்ள நகை கடையில் உறுதி செய்யவும்.</p>
+    <% } %>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>
