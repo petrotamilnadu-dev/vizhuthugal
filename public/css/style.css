@@ -165,10 +165,15 @@ img { max-width: 100%; display: block; }
 
 /* ===== Footer ===== */
 .site-footer { background: var(--navy-deep); color: rgba(255,255,255,.75); margin-top: 60px; }
-.footer-inner { text-align: center; padding: 32px 20px; }
-.footer-logo { height: 30px; margin: 0 auto 12px; filter: brightness(0) invert(1); opacity: .9; }
+.footer-inner { text-align: center; padding: 56px 20px 44px; }
+.footer-logo { height: 64px; margin: 0 auto 18px; opacity: 1; }
 .footer-inner p { margin: 4px 0; font-size: .85rem; }
 .footer-inner a { color: var(--orange); }
+.footer-contact { font-size: .92rem; margin-bottom: 10px !important; }
+.footer-contact a { color: #fff; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.footer-copy { color: rgba(255,255,255,.55); font-size: .8rem; }
+.footer-admin-link { margin-top: 14px !important; }
+.footer-admin-link a { color: rgba(255,255,255,.4); font-size: .78rem; }
 
 /* ===== Buttons / alerts (shared) ===== */
 .btn { display: inline-block; padding: 10px 20px; border-radius: 8px; font-family: var(--font-ui); font-weight: 600; font-size: .92rem; border: 0; cursor: pointer; }
