@@ -105,25 +105,31 @@ Admin → **Preview** page-ல முகப்புப்பக்கம் ஒ
 பண்ணது/புதிய செய்தி சேர்த்தது எல்லாத்தையும் இங்க refresh பண்ணி
 உடனே பாக்கலாம்.
 
-## தங்கம் / வெள்ளி Rate Belt + Rate Details Page
+## தங்கம் / வெள்ளி Rate — Logo பக்கத்தில் + Rate Details Page
 
 Admin → **Rates** page-ல் தங்கம் (1 கிராம்) மற்றும் வெள்ளி (1 கிராம்)
 விலையை போடலாம். Save பண்ணின தேதியே automatic-ஆ காட்டப்படும் (தனியா
-தேதி type பண்ண வேண்டாம்). இது header-க்கு கீழே Social Media icons-ஓடு
-சேர்ந்த ஒரு "belt" strip-ல் "புதுச்சேரி தங்கம் (1g)" nu காட்டப்படும்.
-ரேட் கொடுக்காம விட்டா, andha belt-ல் social icons மட்டும் காட்டப்படும்.
+தேதி type பண்ண வேண்டாம்).
 
-Menu bar-ல் "💰 புதுச்சேரியில் தங்கம் வெள்ளி விலை விபரம்" nu ஒரு
-நிரந்தர link இருக்கு — அது ஒரு தனி பக்கத்தை (`/rates`) திறக்கும், அங்க
-1 கிராம் + 1 பவுன் (8 கிராம்) தங்கம் விலை, 1 கிராம் வெள்ளி விலை, update
-தேதி — எல்லாம் பெரிசா, தெளிவா காட்டப்படும்.
+இந்த rate, header-ல் **Logo/Vizhuthugal Media பெயருக்கு பக்கத்திலேயே**
+ஒரு ticker-ஆ காட்டப்படும் — "1 கிராம்" விலை இருந்து "1 பவுன்" (தங்கம்)
+/ "1 கிலோ" (வெள்ளி) விலைக்கு ஒவ்வொரு சில நொடிக்கும் மாறி மாறி (animate
+ஆகி) தெரியும். இந்த ticker-ஐ click பண்ணினா `/rates` பக்கத்திற்கு
+போகும் — அங்க எல்லா விலை details-உம் பெரிசா காட்டப்படும். Menu bar-ல்
+தனி link எதுவும் இல்லை — logo பக்கத்துல இருக்கிற ticker-ஐ click
+பண்ணினாலே அந்த பக்கம் போகலாம்.
 
-## Menu — Horizontal scroll (all screen sizes)
+Header-க்கு கீழே social icons belt-ல் "எப்போ update பண்ணது" என்ற
+தேதி மட்டும் சின்னதா காட்டப்படும்.
+
+## Menu — Horizontal scroll (all screen sizes) + Bold
 
 Menu bar ippo எல்லா screen size-லேயும் (mobile உட்பட) ஒரே horizontal
 row-ஆ இருக்கு — hamburger (☰) button கிடையாது. Categories/menu items
 அதிகமா இருந்தா, left-right swipe/scroll பண்ணி பாக்கலாம். Puதிய
-category add பண்ணினா இதே row-ல் தானாகவே சேர்ந்துகொள்ளும்.
+category add பண்ணினா இதே row-ல் தானாகவே சேர்ந்துகொள்ளும். Menu text
+இப்போ bold-ஆ இருக்கும், hover பண்ணினா ஒரு animated underline + slight
+lift தெரியும்.
 
 ## செய்தி Pin செய்ய (Fixed position)
 

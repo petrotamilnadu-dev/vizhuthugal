@@ -44,6 +44,8 @@ app.use((req, res, next) => {
   res.locals.SOCIAL_YOUTUBE = getSetting('social_youtube_url', '');
   res.locals.RATE_GOLD = getSetting('rate_gold', '');
   res.locals.RATE_SILVER = getSetting('rate_silver', '');
+  res.locals.RATE_GOLD_PAVUN = res.locals.RATE_GOLD ? (parseFloat(res.locals.RATE_GOLD) * 8).toLocaleString('en-IN') : '';
+  res.locals.RATE_SILVER_KG = res.locals.RATE_SILVER ? (parseFloat(res.locals.RATE_SILVER) * 1000).toLocaleString('en-IN') : '';
   const rateUpdatedAt = getSetting('rate_updated_at');
   res.locals.RATE_UPDATED = rateUpdatedAt
     ? new Date(rateUpdatedAt).toLocaleDateString('ta-IN', { day: 'numeric', month: 'short', year: 'numeric' })

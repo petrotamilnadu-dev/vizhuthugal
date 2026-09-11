@@ -1,41 +1,25 @@
-<% var hasRates = RATE_GOLD || RATE_SILVER; %>
 <% var hasSocial = SOCIAL_INSTAGRAM || SOCIAL_FACEBOOK || SOCIAL_YOUTUBE; %>
-<% if (hasRates || hasSocial) { %>
+<% if (hasSocial) { %>
 <div class="info-belt">
   <div class="container info-belt-inner">
-    <% if (hasRates) { %>
-      <div class="rate-strip">
-        <% if (RATE_GOLD) { %>
-          <span class="rate-item"><span class="rate-label">புதுச்சேரி தங்கம் (1g)</span><span class="rate-value">&#8377;<%= RATE_GOLD %></span></span>
-        <% } %>
-        <% if (RATE_SILVER) { %>
-          <span class="rate-item"><span class="rate-label">வெள்ளி (1g)</span><span class="rate-value">&#8377;<%= RATE_SILVER %></span></span>
-        <% } %>
-        <% if (RATE_UPDATED) { %><span class="rate-updated"><%= RATE_UPDATED %></span><% } %>
-      </div>
-    <% } else { %>
-      <div></div>
-    <% } %>
-
-    <% if (hasSocial) { %>
-      <div class="social-icons">
-        <% if (SOCIAL_INSTAGRAM) { %>
-          <a href="<%= SOCIAL_INSTAGRAM %>" target="_blank" rel="noopener" class="social-icon social-instagram" aria-label="Instagram">
-            <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="6" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor"/></svg>
-          </a>
-        <% } %>
-        <% if (SOCIAL_FACEBOOK) { %>
-          <a href="<%= SOCIAL_FACEBOOK %>" target="_blank" rel="noopener" class="social-icon social-facebook" aria-label="Facebook">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M15 8.5h2V5.2c-.35-.05-1.53-.15-2.9-.15-2.87 0-4.83 1.8-4.83 5.1V13H6.8v3.6h2.47V22h3.6v-5.4h2.6l.4-3.6h-3V10.5c0-1.04.28-1.75 1.73-1.75z" fill="currentColor"/></svg>
-          </a>
-        <% } %>
-        <% if (SOCIAL_YOUTUBE) { %>
-          <a href="<%= SOCIAL_YOUTUBE %>" target="_blank" rel="noopener" class="social-icon social-youtube" aria-label="YouTube">
-            <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5.5" width="20" height="13" rx="4" stroke="currentColor" stroke-width="1.8"/><path d="M10.5 9.5l5 2.5-5 2.5z" fill="currentColor"/></svg>
-          </a>
-        <% } %>
-      </div>
-    <% } %>
+    <% if (RATE_UPDATED) { %><span class="rate-updated">தங்கம்/வெள்ளி விலை <%= RATE_UPDATED %> அன்று புதுப்பிக்கப்பட்டது</span><% } else { %><span></span><% } %>
+    <div class="social-icons">
+      <% if (SOCIAL_INSTAGRAM) { %>
+        <a href="<%= SOCIAL_INSTAGRAM %>" target="_blank" rel="noopener" class="social-icon social-instagram" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="6" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor"/></svg>
+        </a>
+      <% } %>
+      <% if (SOCIAL_FACEBOOK) { %>
+        <a href="<%= SOCIAL_FACEBOOK %>" target="_blank" rel="noopener" class="social-icon social-facebook" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 8.5h2V5.2c-.35-.05-1.53-.15-2.9-.15-2.87 0-4.83 1.8-4.83 5.1V13H6.8v3.6h2.47V22h3.6v-5.4h2.6l.4-3.6h-3V10.5c0-1.04.28-1.75 1.73-1.75z" fill="currentColor"/></svg>
+        </a>
+      <% } %>
+      <% if (SOCIAL_YOUTUBE) { %>
+        <a href="<%= SOCIAL_YOUTUBE %>" target="_blank" rel="noopener" class="social-icon social-youtube" aria-label="YouTube">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5.5" width="20" height="13" rx="4" stroke="currentColor" stroke-width="1.8"/><path d="M10.5 9.5l5 2.5-5 2.5z" fill="currentColor"/></svg>
+        </a>
+      <% } %>
+    </div>
   </div>
 </div>
 <% } %>
