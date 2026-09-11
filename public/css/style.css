@@ -208,8 +208,20 @@ img { max-width: 100%; display: block; }
   font-size: 1.2rem; pointer-events: none;
 }
 .video-card h3 { font-size: .95rem; margin: 0; padding: 12px 14px 16px; line-height: 1.4; }
-.video-embed { position: relative; aspect-ratio: 16/9; }
-.video-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+/* ===== Video modal (lightbox) — big centered player, not browser fullscreen ===== */
+.video-modal-overlay {
+  position: fixed; inset: 0; background: rgba(8,12,24,.9); z-index: 1000;
+  display: none; align-items: center; justify-content: center; padding: 24px;
+}
+.video-modal-overlay.open { display: flex; }
+.video-modal { position: relative; width: 100%; max-width: 960px; aspect-ratio: 16/9; }
+.video-modal iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 12px; background: #000; }
+.video-modal-close {
+  position: absolute; top: -44px; right: 0; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25);
+  color: #fff; width: 36px; height: 36px; border-radius: 50%; font-size: 1.4rem; line-height: 1; cursor: pointer;
+}
+.video-modal-close:hover { background: rgba(255,255,255,.22); }
 
 /* ===== Admin form extras ===== */
 .admin-subheading { font-size: 1.02rem; margin: 8px 0 4px; }
@@ -336,4 +348,5 @@ img { max-width: 100%; display: block; }
   .hero-main-content h1 { font-size: 1.4rem; }
   .hero-main { min-height: 260px; }
   .admin-nav { display: none; }
+  .video-modal-close { top: -40px; right: 0; width: 32px; height: 32px; font-size: 1.2rem; }
 }

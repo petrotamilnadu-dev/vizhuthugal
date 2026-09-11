@@ -16,8 +16,8 @@
     <% } else { %>
       <div class="video-grid">
         <% videos.forEach(function(v) { %>
-          <div class="video-card" data-video-id="<%= v.videoId %>">
-            <div class="video-thumb" onclick="vmPlayVideo(this)">
+          <div class="video-card">
+            <div class="video-thumb" onclick="vmOpenModal('<%= v.videoId %>')">
               <% if (v.thumbnail) { %><img src="<%= v.thumbnail %>" alt="<%= v.title %>" loading="lazy"><% } else { %><div class="card-img-placeholder"></div><% } %>
               <span class="play-btn">&#9658;</span>
             </div>
@@ -30,18 +30,33 @@
 
   <%- include('partials/footer') %>
 
+  <div class="video-modal-overlay" id="videoModalOverlay" onclick="if (event.target === this) vmCloseModal()">
+    <div class="video-modal">
+      <button type="button" class="video-modal-close" onclick="vmCloseModal()" aria-label="Close">&times;</button>
+      <iframe id="videoModalIframe" src="" title="YouTube video" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+    </div>
+  </div>
+
   <script>
-    function vmPlayVideo(el) {
-      var card = el.closest('.video-card');
-      var id = card.getAttribute('data-video-id');
-      var wrap = document.createElement('div');
-      wrap.className = 'video-embed';
-      wrap.innerHTML = '<iframe src="https://www.youtube.com/embed/' + id + '?autoplay=1" ' +
-        'title="YouTube video" frameborder="0" ' +
-        'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" ' +
-        'allowfullscreen></iframe>';
-      el.replaceWith(wrap);
+    function vmOpenModal(id) {
+      var overlay = document.getElementById('videoModalOverlay');
+      var iframe = document.getElementById('videoModalIframe');
+      iframe.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
     }
+    function vmCloseModal() {
+      var overlay = document.getElementById('videoModalOverlay');
+      var iframe = document.getElementById('videoModalIframe');
+      overlay.classList.remove('open');
+      iframe.src = '';
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') vmCloseModal();
+    });
   </script>
 </body>
 </html>
