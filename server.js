@@ -5,7 +5,6 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 const bcrypt = require('bcryptjs');
-const slugify = require('slugify');
 const { db, UPLOADS_DIR, nextTopPosition } = require('./db');
 const { getSetting, setSetting } = require('./settings');
 const { getLatestVideos: getInstagramVideos } = require('./instagram');
@@ -50,6 +49,7 @@ app.use((req, res, next) => {
   res.locals.RATE_UPDATED = rateUpdatedAt
     ? new Date(rateUpdatedAt).toLocaleDateString('ta-IN', { day: 'numeric', month: 'short', year: 'numeric' })
     : null;
+  res.locals.LATEST_HEADLINES = db.prepare('SELECT title, slug FROM articles WHERE published = 1 ORDER BY created_at DESC LIMIT 6').all();
   next();
 });
 
@@ -77,8 +77,21 @@ function requireAdmin(req, res, next) {
   return res.redirect('/admin/login');
 }
 
+// Builds a URL-safe slug that keeps the original script (Tamil, English,
+// whatever) instead of transliterating/stripping it — so a Tamil headline
+// gets a readable Tamil URL instead of falling back to a generic word.
+function slugifyText(text) {
+  return (text || '')
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^\p{L}\p{N}\p{M}-]+/gu, '')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 function makeUniqueSlug(title, excludeId) {
-  let base = slugify(title, { lower: true, strict: true, trim: true }) || 'article';
+  let base = slugifyText(title) || 'news';
   let candidate = base;
   let i = 1;
   const exists = (s) => {
@@ -214,7 +227,7 @@ app.get('/search', (req, res) => {
   res.render('search', { q, articles });
 });
 
-app.get('/article/:slug', (req, res) => {
+app.get('/news/:slug', (req, res) => {
   const article = db.prepare(`
     SELECT a.*, c.name AS category_name, c.slug AS category_slug
     FROM articles a LEFT JOIN categories c ON a.category_id = c.id
@@ -380,7 +393,7 @@ app.post('/admin/categories/:id/move', requireAdmin, (req, res) => {
 });
 
 function makeCategorySlug(name) {
-  let base = slugify(name, { lower: true, strict: true, trim: true }) || 'category';
+  let base = slugifyText(name) || 'category';
   let candidate = base, i = 1;
   while (db.prepare('SELECT id FROM categories WHERE slug = ?').get(candidate)) {
     candidate = `${base}-${i++}`;

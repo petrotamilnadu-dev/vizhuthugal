@@ -13,7 +13,7 @@
 
     <% if (RATE_GOLD || RATE_SILVER) { %>
       <a href="/rates" class="header-rate">
-        <span class="header-rate-title">புதுச்சேரி<br>விலை விபரம்</span>
+        <span class="header-rate-title">புதுச்சேரி<br>விலை விபரம்<% if (RATE_UPDATED) { %><br><span class="header-rate-date"><%= RATE_UPDATED %></span><% } %></span>
         <div class="header-rate-items">
           <% if (RATE_GOLD) { %>
             <div class="header-rate-item">

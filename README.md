@@ -112,15 +112,18 @@ Admin → **Rates** page-ல் தங்கம் (1 கிராம்) மற
 தேதி type பண்ண வேண்டாம்).
 
 இந்த rate, header-ல் **Logo/Vizhuthugal Media பெயருக்கு பக்கத்திலேயே**
-ஒரு ticker-ஆ காட்டப்படும் — "1 கிராம்" விலை இருந்து "1 பவுன்" (தங்கம்)
-/ "1 கிலோ" (வெள்ளி) விலைக்கு ஒவ்வொரு சில நொடிக்கும் மாறி மாறி (animate
+ஒரு periya ticker-ஆ காட்டப்படும் ("புதுச்சேரி விலை விபரம்" title-ஓடு,
+update தேதி உட்பட) — "1 கிராம்" விலை இருந்து "1 பவுன்" (தங்கம்) /
+"1 கிலோ" (வெள்ளி) விலைக்கு ஒவ்வொரு சில நொடிக்கும் மாறி மாறி (animate
 ஆகி) தெரியும். இந்த ticker-ஐ click பண்ணினா `/rates` பக்கத்திற்கு
-போகும் — அங்க எல்லா விலை details-உம் பெரிசா காட்டப்படும். Menu bar-ல்
-தனி link எதுவும் இல்லை — logo பக்கத்துல இருக்கிற ticker-ஐ click
-பண்ணினாலே அந்த பக்கம் போகலாம்.
+போகும். Menu bar-ல் தனி link எதுவும் இல்லை.
 
-Header-க்கு கீழே social icons belt-ல் "எப்போ update பண்ணது" என்ற
-தேதி மட்டும் சின்னதா காட்டப்படும்.
+## Latest Headlines Ticker (Social belt)
+
+Header-க்கு கீழே social icons இருக்கிற belt-ல், சமீபத்தில் publish
+பண்ண 6 செய்திகளின் headline ஒவ்வொன்றா, மேலிருந்து fade+slide ஆகி
+("top-in" effect) ஒவ்வொரு 4 வினாடிக்கும் மாறி மாறி தெரியும். எந்த
+headline-ஐயும் click பண்ணா அந்த செய்திக்கே நேரடியா போகலாம்.
 
 ## Menu — Horizontal scroll (all screen sizes) + Bold
 
@@ -129,7 +132,16 @@ row-ஆ இருக்கு — hamburger (☰) button கிடையாத�
 அதிகமா இருந்தா, left-right swipe/scroll பண்ணி பாக்கலாம். Puதிய
 category add பண்ணினா இதே row-ல் தானாகவே சேர்ந்துகொள்ளும். Menu text
 இப்போ bold-ஆ இருக்கும், hover பண்ணினா ஒரு animated underline + slight
-lift தெரியும்.
+lift தெரியும். Logo மற்றும் site name-உம் முன்பை விட periya-ஆ இருக்கும்.
+
+## செய்தி URL-கள் — "article" வார்த்தை இல்லாம, Tamil-லேயே
+
+செய்தியின் title-ஐ base-ஆ வெச்சு URL slug தானாகவே உருவாகும் (Tamil
+title கொடுத்தா, URL-உம் Tamil-லேயே இருக்கும் — e.g.
+`/news/தமிழகத்தில்-மழை-எச்சரிக்கை`). முன்பு non-English title-க்கு
+"article-1", "article-2" மாதிரி generic word fallback ஆகிட்டு
+இருந்தது — அதை fix பண்ணிட்டேன். Reader-facing எந்த URL-லேயும்
+"article" வார்த்தை இனி வராது (`/news/...` prefix use பண்றோம்).
 
 ## செய்தி Pin செய்ய (Fixed position)
 

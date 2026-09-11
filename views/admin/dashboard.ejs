@@ -32,7 +32,7 @@
         <tbody>
           <% articles.forEach(function(a) { %>
             <tr>
-              <td><a href="/article/<%= a.slug %>" target="_blank"><%= a.title %></a></td>
+              <td><a href="/news/<%= a.slug %>" target="_blank"><%= a.title %></a></td>
               <td><%= a.category_name || '-' %></td>
               <td>
                 <% if (a.published) { %><span class="badge badge-live">வெளியிடப்பட்டது</span>
