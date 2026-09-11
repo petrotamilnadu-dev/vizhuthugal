@@ -13,24 +13,27 @@
 
     <% if (RATE_GOLD || RATE_SILVER) { %>
       <a href="/rates" class="header-rate">
-        <% if (RATE_GOLD) { %>
-          <div class="header-rate-item">
-            <span class="header-rate-label">தங்கம்</span>
-            <span class="header-rate-flip">
-              <span class="header-rate-val hr-a">1g &#8377;<%= RATE_GOLD %></span>
-              <% if (RATE_GOLD_PAVUN) { %><span class="header-rate-val hr-b">1 பவுன் &#8377;<%= RATE_GOLD_PAVUN %></span><% } %>
-            </span>
-          </div>
-        <% } %>
-        <% if (RATE_SILVER) { %>
-          <div class="header-rate-item">
-            <span class="header-rate-label">வெள்ளி</span>
-            <span class="header-rate-flip">
-              <span class="header-rate-val hr-a">1g &#8377;<%= RATE_SILVER %></span>
-              <% if (RATE_SILVER_KG) { %><span class="header-rate-val hr-b">1 கிலோ &#8377;<%= RATE_SILVER_KG %></span><% } %>
-            </span>
-          </div>
-        <% } %>
+        <span class="header-rate-title">புதுச்சேரி<br>விலை விபரம்</span>
+        <div class="header-rate-items">
+          <% if (RATE_GOLD) { %>
+            <div class="header-rate-item">
+              <span class="header-rate-label">தங்கம்</span>
+              <span class="header-rate-flip">
+                <span class="header-rate-val hr-a">1g &#8377;<%= RATE_GOLD %></span>
+                <% if (RATE_GOLD_PAVUN) { %><span class="header-rate-val hr-b">1 பவுன் &#8377;<%= RATE_GOLD_PAVUN %></span><% } %>
+              </span>
+            </div>
+          <% } %>
+          <% if (RATE_SILVER) { %>
+            <div class="header-rate-item">
+              <span class="header-rate-label">வெள்ளி</span>
+              <span class="header-rate-flip">
+                <span class="header-rate-val hr-a">1g &#8377;<%= RATE_SILVER %></span>
+                <% if (RATE_SILVER_KG) { %><span class="header-rate-val hr-b">1 கிலோ &#8377;<%= RATE_SILVER_KG %></span><% } %>
+              </span>
+            </div>
+          <% } %>
+        </div>
       </a>
     <% } %>
 

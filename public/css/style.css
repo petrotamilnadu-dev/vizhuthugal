@@ -71,14 +71,20 @@ img { max-width: 100%; display: block; }
 
 /* ===== Header rate ticker (next to logo) ===== */
 .header-rate {
-  display: flex; gap: 22px; align-items: center; margin-left: 8px; padding: 8px 18px; border-radius: 14px;
+  display: flex; gap: 18px; align-items: center; margin-left: 8px; padding: 8px 20px; border-radius: 14px;
   background: linear-gradient(115deg, rgba(240,152,46,.14), rgba(194,42,134,.14));
   border: 1px solid rgba(240,192,90,.28); transition: background .2s, transform .15s;
+  flex: 1 1 auto; min-width: 0; max-width: 460px;
 }
 .header-rate:hover { background: linear-gradient(115deg, rgba(240,152,46,.24), rgba(194,42,134,.24)); transform: translateY(-1px); }
+.header-rate-title {
+  font-size: .66rem; font-weight: 700; color: #ffd9a0; line-height: 1.25; flex-shrink: 0;
+  border-right: 1px solid rgba(255,255,255,.2); padding-right: 14px;
+}
+.header-rate-items { display: flex; gap: 22px; align-items: center; flex-wrap: nowrap; }
 .header-rate-item { display: flex; flex-direction: column; gap: 2px; line-height: 1.2; }
 .header-rate-label { font-size: .68rem; color: rgba(255,255,255,.6); font-weight: 600; letter-spacing: .02em; }
-.header-rate-flip { position: relative; display: block; height: 1.35em; overflow: hidden; min-width: 108px; }
+.header-rate-flip { position: relative; display: block; height: 1.35em; width: max-content; min-width: 140px; }
 .header-rate-val {
   position: absolute; left: 0; top: 0; white-space: nowrap; font-size: .92rem; font-weight: 700; color: #f0c05a;
   animation: rateFlip 7s ease-in-out infinite;
@@ -454,9 +460,11 @@ img { max-width: 100%; display: block; }
   .video-grid { grid-template-columns: 1fr; }
   .rate-cards { grid-template-columns: 1fr; }
   .brand-copy { display: none; }
-  .header-rate { gap: 12px; padding: 6px 12px; margin-left: 4px; }
-  .header-rate-flip { min-width: 78px; }
-  .header-rate-val { font-size: .78rem; }
+  .header-rate { gap: 10px; padding: 7px 14px; margin-left: 4px; max-width: none; }
+  .header-rate-title { font-size: .6rem; padding-right: 10px; }
+  .header-rate-items { gap: 14px; }
+  .header-rate-flip { min-width: 108px; }
+  .header-rate-val { font-size: .8rem; }
   .header-rate-label { font-size: .6rem; }
   .pill-nav { padding: 8px 16px; }
   .hero-side { flex-direction: column; }
@@ -472,4 +480,6 @@ img { max-width: 100%; display: block; }
 @media (max-width: 420px) {
   .header-rate { order: 3; width: 100%; margin: 8px 0 0; justify-content: center; }
   .header-actions { order: 2; }
+  .header-rate-title br { display: none; }
+  .header-rate-title { padding-right: 12px; }
 }
