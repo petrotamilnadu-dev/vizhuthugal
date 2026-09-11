@@ -7,6 +7,20 @@
   <%- include('partials/header') %>
 
   <main class="container">
+    <% if (liveVideo) { %>
+      <div class="live-banner" onclick="vmOpenModal('<%= liveVideo.videoId %>')">
+        <div class="live-banner-thumb">
+          <% if (liveVideo.thumbnail) { %><img src="<%= liveVideo.thumbnail %>" alt="<%= liveVideo.title %>"><% } %>
+          <span class="play-btn">&#9658;</span>
+        </div>
+        <div class="live-banner-text">
+          <span class="live-badge">&#128308; LIVE</span>
+          <h2><%= liveVideo.title %></h2>
+          <p>இப்போது நேரலையில் — பார்க்க கிளிக் செய்யவும்</p>
+        </div>
+      </div>
+    <% } %>
+
     <%- include('partials/banner', { banner: banners.top }) %>
 
     <% if (heroMain) { %>
@@ -42,6 +56,17 @@
       </div>
     <% } %>
 
+    <% if (featuredVideo) { %>
+      <h2 class="section-title">சிறப்பு வீடியோ</h2>
+      <div class="featured-video" onclick="vmOpenModal('<%= featuredVideo.videoId %>')">
+        <div class="featured-video-thumb">
+          <img src="<%= featuredVideo.thumbnail %>" alt="<%= featuredVideo.title %>">
+          <span class="play-btn">&#9658;</span>
+        </div>
+        <% if (featuredVideo.title) { %><h3><%= featuredVideo.title %></h3><% } %>
+      </div>
+    <% } %>
+
     <% if (rest.length) { %>
       <h2 class="section-title">சமீபத்திய செய்திகள்</h2>
       <div class="article-grid">
@@ -65,5 +90,6 @@
   </main>
 
   <%- include('partials/footer') %>
+  <%- include('partials/video-modal') %>
 </body>
 </html>

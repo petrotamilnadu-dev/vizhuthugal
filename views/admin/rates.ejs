@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <%- include('../partials/head', { pageTitle: 'தங்கம்/வெள்ளி Rate' }) %>
+</head>
+<body class="admin-body">
+  <%- include('../partials/admin-nav', { active: 'rates' }) %>
+
+  <main class="container admin-main">
+    <h1>தங்கம் / வெள்ளி Rate</h1>
+    <% if (saved) { %><div class="alert alert-success"><%= saved %></div><% } %>
+    <p class="hint">
+      இங்க கொடுக்கிற rate, site-ல் header-க்கு கீழே உள்ள belt-ல் காட்டப்படும்.
+      நீங்க எந்த தேதியில் "சேமி" பண்றீங்களோ, அந்த தேதி rate-க்கு பக்கத்தில்
+      automatic-ஆ காட்டப்படும் (தேதியை நீங்க தனியா type பண்ண வேண்டாம்).
+    </p>
+    <% if (rate_updated_at) { %>
+      <p class="hint">கடைசியா update பண்ணது: <strong><%= rate_updated_at %></strong></p>
+    <% } %>
+
+    <form method="post" action="/admin/rates" class="admin-form" style="max-width:420px">
+      <label>தங்கம் (1 கிராம்) — &#8377;</label>
+      <input type="text" name="rate_gold" value="<%= rate_gold %>" placeholder="e.g. 6540">
+
+      <label>வெள்ளி (1 கிராம்) — &#8377;</label>
+      <input type="text" name="rate_silver" value="<%= rate_silver %>" placeholder="e.g. 85">
+
+      <button type="submit" class="btn btn-primary">சேமி</button>
+    </form>
+  </main>
+</body>
+</html>

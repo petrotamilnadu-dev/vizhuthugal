@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS articles (
   category_id INTEGER,
   published INTEGER DEFAULT 1,
   position INTEGER,
+  pinned INTEGER DEFAULT 0,
   views INTEGER DEFAULT 0,
   created_at TEXT DEFAULT (datetime('now')),
   updated_at TEXT DEFAULT (datetime('now')),
@@ -56,6 +57,10 @@ const articleCols = db.prepare("PRAGMA table_info(articles)").all().map(c => c.n
 if (!articleCols.includes('position')) {
   db.exec('ALTER TABLE articles ADD COLUMN position INTEGER');
   console.log('[setup] Added missing "position" column to articles table.');
+}
+if (!articleCols.includes('pinned')) {
+  db.exec('ALTER TABLE articles ADD COLUMN pinned INTEGER DEFAULT 0');
+  console.log('[setup] Added missing "pinned" column to articles table.');
 }
 
 // Backfill position for any existing articles that don't have one yet, so

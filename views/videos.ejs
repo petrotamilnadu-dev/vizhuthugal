@@ -29,34 +29,6 @@
   </main>
 
   <%- include('partials/footer') %>
-
-  <div class="video-modal-overlay" id="videoModalOverlay" onclick="if (event.target === this) vmCloseModal()">
-    <div class="video-modal">
-      <button type="button" class="video-modal-close" onclick="vmCloseModal()" aria-label="Close">&times;</button>
-      <iframe id="videoModalIframe" src="" title="YouTube video" frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen></iframe>
-    </div>
-  </div>
-
-  <script>
-    function vmOpenModal(id) {
-      var overlay = document.getElementById('videoModalOverlay');
-      var iframe = document.getElementById('videoModalIframe');
-      iframe.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
-      overlay.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-    function vmCloseModal() {
-      var overlay = document.getElementById('videoModalOverlay');
-      var iframe = document.getElementById('videoModalIframe');
-      overlay.classList.remove('open');
-      iframe.src = '';
-      document.body.style.overflow = '';
-    }
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') vmCloseModal();
-    });
-  </script>
+  <%- include('partials/video-modal') %>
 </body>
 </html>

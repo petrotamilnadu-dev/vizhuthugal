@@ -69,6 +69,19 @@
         idhu எப்போதும் "UC" nu start aagum (ungal channel URL-la irukra @VizhuthugalMedia handle idhu illa).
       </p>
 
+      <hr class="divider">
+
+      <h2 class="admin-subheading">முகப்புல ஒரு குறிப்பிட்ட வீடியோ Feature பண்ண</h2>
+      <label>YouTube Video URL</label>
+      <input type="text" name="featured_youtube_video" value="<%= featured_youtube_video_id ? 'https://www.youtube.com/watch?v=' + featured_youtube_video_id : '' %>" placeholder="https://www.youtube.com/watch?v=... (illa youtu.be/... link)">
+      <p class="hint">
+        Full YouTube video link paste பண்ணுங்க — முகப்புப்பக்கத்தில் இந்த
+        வீடியோ தனியா feature ஆகும் (click பண்ணா site-லேயே play ஆகும்).
+        இந்த field-ஐ காலியா விட்டு சேமித்தா, feature ஆன வீடியோ remove ஆகிடும்.
+        (YouTube channel எப்பவாவது Live போனா, அந்த live video இந்த
+        featured video-க்கு பதிலா automatic-ஆ top-ல் காட்டப்படும்.)
+      </p>
+
       <button type="submit" class="btn btn-primary">சேமி</button>
     </form>
   </main>

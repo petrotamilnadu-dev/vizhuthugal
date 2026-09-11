@@ -41,10 +41,13 @@
 
       <div class="checkbox-row">
         <label><input type="checkbox" name="published" <%= !article || article.published ? 'checked' : '' %>> வெளியிடப்பட்டது</label>
+        <label><input type="checkbox" name="pinned" <%= article && article.pinned ? 'checked' : '' %>> &#128204; Pin செய் (எப்போதும் மேலே நிலையா இருக்கும்)</label>
       </div>
-      <p class="hint">Homepage-ல் எந்த இடத்தில் இந்த செய்தி வரணும் என்பதை
-        <a href="/admin/homepage-order">முகப்பு வரிசை</a> பக்கத்தில் மாற்றலாம்
-        (புதிய செய்தி தானாகவே மேலே வரும்).</p>
+      <p class="hint">Pin செய்யாத செய்திகளுக்கு இடையே Homepage-ல் எந்த இடத்தில்
+        வரணும் என்பதை <a href="/admin/homepage-order">முகப்பு வரிசை</a>
+        பக்கத்தில் மாற்றலாம் (புதிய செய்தி தானாகவே மேலே வரும்). Pin செய்த
+        செய்திகள் எப்போதும் மேலே ஃபிக்ஸ்ட்-ஆ இருக்கும் — புதிய செய்தி
+        வந்தாலும் அதனால் கீழே தள்ளப்படாது.</p>
 
       <button type="submit" class="btn btn-primary"><%= article ? 'மாற்றங்களை சேமி' : 'செய்தியை வெளியிடு' %></button>
       <a href="/admin" class="btn btn-secondary">ரத்து செய்</a>

@@ -105,6 +105,40 @@ Admin → **Preview** page-ல முகப்புப்பக்கம் ஒ
 பண்ணது/புதிய செய்தி சேர்த்தது எல்லாத்தையும் இங்க refresh பண்ணி
 உடனே பாக்கலாம்.
 
+## தங்கம் / வெள்ளி Rate Belt
+
+Admin → **Rates** page-ல் தங்கம் (1 கிராம்) மற்றும் வெள்ளி (1 கிராம்)
+விலையை போடலாம். Save பண்ணின தேதியே automatic-ஆ காட்டப்படும் (தனியா
+தேதி type பண்ண வேண்டாம்). இது header-க்கு கீழே Social Media icons-ஓடு
+சேர்ந்த ஒரு "belt" strip-ல் காட்டப்படும். ரேட் கொடுக்காம விட்டா, andha
+belt-ல் social icons மட்டும் காட்டப்படும்.
+
+## செய்தி Pin செய்ய (Fixed position)
+
+ஒவ்வொரு செய்தியையும் add/edit பண்றப்போ "📌 Pin செய்" checkbox இருக்கு.
+Pin பண்ணின செய்திகள் எப்போதும் முகப்புப்பக்கத்தில் **மேலே ஒரு தனி
+block-ஆ** இருக்கும் — புதிய செய்தி publish பண்ணினாலும், pin பண்ணாத
+செய்திகள் எவ்வளவு reorder பண்ணினாலும் pin பண்ணின செய்திகளின் position
+மாறாது. Homepage Order page-ல் pin பண்ணின செய்திகள் தனி group-ஆ
+காட்டப்படும், அதுக்குள்ளே மட்டும் ▲/▼ மூலம் order மாத்தலாம்.
+
+## Featured YouTube Video + Live Auto-detect
+
+Admin → Social Media page-ல் "முகப்புல ஒரு குறிப்பிட்ட வீடியோ Feature
+பண்ண" section-ல் எந்த ஒரு YouTube video link-ஐயும் paste பண்ணலாம் —
+அது முகப்புப்பக்கத்தில் "சிறப்பு வீடியோ" section-ஆ தோன்றும் (இதுக்கு
+API key கூட தேவையில்லை, YouTube-ஓட public oEmbed use பண்றோம்).
+
+YouTube API Key + Channel ID already connect பண்ணி இருந்தா, ungal
+channel **Live** போன உடனே, அந்த live stream automatic-ஆ முகப்புப்பக்கத்தின்
+**மிக மேலே** ஒரு "🔴 LIVE" banner-ஆ தோன்றும் (featured video-க்கு பதிலா).
+Live status ஒவ்வொரு 5 நிமிடத்துக்கும் ஒரு தடவை மட்டும் check பண்ணப்படும்
+(YouTube API-ல் live-check கொஞ்சம் அதிக quota எடுக்கும், so அடிக்கடி
+check பண்ணாம constrain பண்ணி வச்சிருக்கேன்). Free quota (10,000
+units/day) பொதுவா போதும், aana traffic ரொம்ப அதிகமா இருந்தா, Google
+Cloud Console-ல் quota-வை (Quotas & System Limits) கூட்டிக்கலாம் — idhu
+free-ஆவே செய்யலாம்.
+
 ## Menu order மாற்ற (Categories reorder)
 
 Admin → **பிரிவுகள்** page-ல் ஒவ்வொரு category-க்கும் ▲/▼ பொத்தான்

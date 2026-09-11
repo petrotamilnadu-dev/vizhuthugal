@@ -9,7 +9,7 @@ const slugify = require('slugify');
 const { db, UPLOADS_DIR, nextTopPosition } = require('./db');
 const { getSetting, setSetting } = require('./settings');
 const { getLatestVideos: getInstagramVideos } = require('./instagram');
-const { getLatestVideos: getYoutubeVideos } = require('./youtube');
+const { getLatestVideos: getYoutubeVideos, getVideoInfo, getLiveVideo, extractVideoId: extractYoutubeId } = require('./youtube');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -42,6 +42,12 @@ app.use((req, res, next) => {
   res.locals.SOCIAL_INSTAGRAM = getSetting('social_instagram_url', '');
   res.locals.SOCIAL_FACEBOOK = getSetting('social_facebook_url', '');
   res.locals.SOCIAL_YOUTUBE = getSetting('social_youtube_url', '');
+  res.locals.RATE_GOLD = getSetting('rate_gold', '');
+  res.locals.RATE_SILVER = getSetting('rate_silver', '');
+  const rateUpdatedAt = getSetting('rate_updated_at');
+  res.locals.RATE_UPDATED = rateUpdatedAt
+    ? new Date(rateUpdatedAt).toLocaleDateString('ta-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+    : null;
   next();
 });
 
@@ -114,7 +120,7 @@ app.get('/', async (req, res) => {
     SELECT a.*, c.name AS category_name, c.slug AS category_slug
     FROM articles a LEFT JOIN categories c ON a.category_id = c.id
     WHERE a.published = 1
-    ORDER BY a.position ASC, a.created_at DESC
+    ORDER BY a.pinned DESC, a.position ASC, a.created_at DESC
     LIMIT 15
   `).all();
 
@@ -134,7 +140,24 @@ app.get('/', async (req, res) => {
     infeed: getBanner('infeed')
   };
 
-  res.render('index', { heroMain, heroSide, rest, igVideos, banners });
+  let liveVideo = null;
+  try {
+    liveVideo = await getLiveVideo();
+  } catch (e) {
+    console.error('[youtube] live check error:', e.message);
+  }
+
+  let featuredVideo = null;
+  const featuredVideoId = getSetting('featured_youtube_video_id');
+  if (featuredVideoId && !liveVideo) {
+    try {
+      featuredVideo = await getVideoInfo(featuredVideoId);
+    } catch (e) {
+      console.error('[youtube] featured video fetch error:', e.message);
+    }
+  }
+
+  res.render('index', { heroMain, heroSide, rest, igVideos, banners, liveVideo, featuredVideo });
 });
 
 app.get('/category/:slug', (req, res) => {
@@ -235,7 +258,7 @@ app.get('/admin/articles/new', requireAdmin, (req, res) => {
 });
 
 app.post('/admin/articles/new', requireAdmin, upload.single('image'), (req, res) => {
-  const { title, summary, content, category_id, published } = req.body;
+  const { title, summary, content, category_id, published, pinned } = req.body;
   if (!title || !content) {
     const categories = db.prepare('SELECT * FROM categories ORDER BY sort_order, name').all();
     return res.render('admin/article-form', { article: req.body, categories, error: 'தலைப்பு மற்றும் உள்ளடக்கம் அவசியம்' });
@@ -244,9 +267,9 @@ app.post('/admin/articles/new', requireAdmin, upload.single('image'), (req, res)
   const image = req.file ? `/uploads/${req.file.filename}` : null;
   const position = nextTopPosition();
   db.prepare(`
-    INSERT INTO articles (title, slug, summary, content, image, category_id, published, position)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(title, slug, summary || '', content, image, category_id || null, published ? 1 : 0, position);
+    INSERT INTO articles (title, slug, summary, content, image, category_id, published, position, pinned)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(title, slug, summary || '', content, image, category_id || null, published ? 1 : 0, position, pinned ? 1 : 0);
   res.redirect('/admin');
 });
 
@@ -261,7 +284,7 @@ app.post('/admin/articles/:id/edit', requireAdmin, upload.single('image'), (req,
   const existing = db.prepare('SELECT * FROM articles WHERE id = ?').get(req.params.id);
   if (!existing) return res.redirect('/admin');
 
-  const { title, summary, content, category_id, published } = req.body;
+  const { title, summary, content, category_id, published, pinned } = req.body;
   if (!title || !content) {
     const categories = db.prepare('SELECT * FROM categories ORDER BY sort_order, name').all();
     return res.render('admin/article-form', { article: { ...existing, ...req.body }, categories, error: 'தலைப்பு மற்றும் உள்ளடக்கம் அவசியம்' });
@@ -281,9 +304,9 @@ app.post('/admin/articles/:id/edit', requireAdmin, upload.single('image'), (req,
   }
 
   db.prepare(`
-    UPDATE articles SET title=?, slug=?, summary=?, content=?, image=?, category_id=?, published=?, updated_at=datetime('now')
+    UPDATE articles SET title=?, slug=?, summary=?, content=?, image=?, category_id=?, published=?, pinned=?, updated_at=datetime('now')
     WHERE id=?
-  `).run(title, slug, summary || '', content, image, category_id || null, published ? 1 : 0, existing.id);
+  `).run(title, slug, summary || '', content, image, category_id || null, published ? 1 : 0, pinned ? 1 : 0, existing.id);
 
   res.redirect('/admin');
 });
@@ -368,7 +391,8 @@ function socialSettingsView() {
     ig_token_saved_at: tokenSavedAt ? new Date(parseInt(tokenSavedAt, 10)).toLocaleDateString('ta-IN') : null,
     youtube_api_key: getSetting('youtube_api_key', ''),
     youtube_channel_id: getSetting('youtube_channel_id', ''),
-    yt_configured: !!(getSetting('youtube_api_key') && getSetting('youtube_channel_id'))
+    yt_configured: !!(getSetting('youtube_api_key') && getSetting('youtube_channel_id')),
+    featured_youtube_video_id: getSetting('featured_youtube_video_id', '')
   };
 }
 
@@ -377,7 +401,7 @@ app.get('/admin/social', requireAdmin, (req, res) => {
 });
 
 app.post('/admin/social', requireAdmin, (req, res) => {
-  const { instagram_url, facebook_url, youtube_url, ig_access_token, youtube_api_key, youtube_channel_id } = req.body;
+  const { instagram_url, facebook_url, youtube_url, ig_access_token, youtube_api_key, youtube_channel_id, featured_youtube_video } = req.body;
   setSetting('social_instagram_url', (instagram_url || '').trim());
   setSetting('social_facebook_url', (facebook_url || '').trim());
   setSetting('social_youtube_url', (youtube_url || '').trim());
@@ -391,6 +415,10 @@ app.post('/admin/social', requireAdmin, (req, res) => {
   if (youtube_channel_id && youtube_channel_id.trim()) {
     setSetting('youtube_channel_id', youtube_channel_id.trim());
   }
+  if (featured_youtube_video !== undefined) {
+    const id = extractYoutubeId(featured_youtube_video.trim());
+    setSetting('featured_youtube_video_id', id || '');
+  }
 
   res.render('admin/social', { ...socialSettingsView(), saved: 'சேமிக்கப்பட்டது' });
 });
@@ -401,7 +429,7 @@ app.get('/admin/homepage-order', requireAdmin, (req, res) => {
     SELECT a.*, c.name AS category_name
     FROM articles a LEFT JOIN categories c ON a.category_id = c.id
     WHERE a.published = 1
-    ORDER BY a.position ASC, a.created_at DESC
+    ORDER BY a.pinned DESC, a.position ASC, a.created_at DESC
   `).all();
   res.render('admin/homepage-order', { articles });
 });
@@ -409,14 +437,19 @@ app.get('/admin/homepage-order', requireAdmin, (req, res) => {
 app.post('/admin/homepage-order/move', requireAdmin, (req, res) => {
   const { id, direction } = req.body;
   const ordered = db.prepare(`
-    SELECT id, position FROM articles WHERE published = 1 ORDER BY position ASC, created_at DESC
+    SELECT id, position, pinned FROM articles WHERE published = 1
+    ORDER BY pinned DESC, position ASC, created_at DESC
   `).all();
 
   const idx = ordered.findIndex(a => String(a.id) === String(id));
   if (idx === -1) return res.redirect('/admin/homepage-order');
 
   const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
-  if (swapIdx < 0 || swapIdx >= ordered.length) return res.redirect('/admin/homepage-order');
+  // Pinned and unpinned articles are separate tiers — never swap across
+  // that boundary, so pinned items stay a fixed block at the top.
+  if (swapIdx < 0 || swapIdx >= ordered.length || ordered[swapIdx].pinned !== ordered[idx].pinned) {
+    return res.redirect('/admin/homepage-order');
+  }
 
   const a = ordered[idx];
   const b = ordered[swapIdx];
@@ -476,6 +509,32 @@ app.post('/admin/banners',
     res.render('admin/banners', { slots, saved: 'சேமிக்கப்பட்டது' });
   }
 );
+
+// ---- Gold/Silver rate belt ----
+app.get('/admin/rates', requireAdmin, (req, res) => {
+  const updatedAt = getSetting('rate_updated_at');
+  res.render('admin/rates', {
+    rate_gold: getSetting('rate_gold', ''),
+    rate_silver: getSetting('rate_silver', ''),
+    rate_updated_at: updatedAt ? new Date(updatedAt).toLocaleDateString('ta-IN', { year: 'numeric', month: 'long', day: 'numeric' }) : null,
+    saved: null
+  });
+});
+
+app.post('/admin/rates', requireAdmin, (req, res) => {
+  const { rate_gold, rate_silver } = req.body;
+  setSetting('rate_gold', (rate_gold || '').trim());
+  setSetting('rate_silver', (rate_silver || '').trim());
+  setSetting('rate_updated_at', new Date().toISOString());
+
+  const updatedAt = getSetting('rate_updated_at');
+  res.render('admin/rates', {
+    rate_gold: getSetting('rate_gold', ''),
+    rate_silver: getSetting('rate_silver', ''),
+    rate_updated_at: updatedAt ? new Date(updatedAt).toLocaleDateString('ta-IN', { year: 'numeric', month: 'long', day: 'numeric' }) : null,
+    saved: 'சேமிக்கப்பட்டது'
+  });
+});
 
 // ---- Responsive device preview ----
 app.get('/admin/preview', requireAdmin, (req, res) => {

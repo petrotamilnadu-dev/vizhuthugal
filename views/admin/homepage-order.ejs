@@ -12,7 +12,9 @@
       இந்த வரிசைப்படி தான் முகப்புப்பக்கத்தில் செய்திகள் காட்டப்படும்:
       <strong>1வது</strong> = பெரிய முதன்மை செய்தி, <strong>2, 3</strong> = பக்கத்து சிறிய செய்திகள்,
       மீதமுள்ளவை கீழே grid-ல். &#9650;/&#9660; பொத்தானை அழுத்தி வரிசையை மாற்றலாம்.
-      புதிதாக சேர்க்கும் செய்தி தானாகவே 1வது இடத்திற்கு வரும்.
+      புதிதாக சேர்க்கும் செய்தி தானாகவே 1வது இடத்திற்கு வரும். &#128204; Pin
+      செய்த செய்திகள் எப்போதும் மேலே ஒரு தனி block-ஆ இருக்கும் — pin
+      செய்யாதவற்றுடன் கலக்காது.
     </p>
 
     <% if (articles.length === 0) { %>
@@ -26,7 +28,7 @@
               <% if (a.image) { %><img src="<%= a.image %>" alt=""><% } else { %><div class="card-img-placeholder"></div><% } %>
             </div>
             <div class="order-text">
-              <strong><%= a.title %></strong>
+              <strong><% if (a.pinned) { %>&#128204; <% } %><%= a.title %></strong>
               <span class="order-meta"><%= a.category_name || '-' %> &middot; <%= new Date(a.created_at).toLocaleDateString('ta-IN') %></span>
             </div>
             <div class="order-actions">
