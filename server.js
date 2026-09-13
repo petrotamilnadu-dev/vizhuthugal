@@ -69,8 +69,8 @@ const upload = multer({
   storage,
   limits: { fileSize: 8 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const ok = /jpeg|jpg|png|webp|gif/.test(file.mimetype);
-    cb(ok ? null : new Error('படங்கள் மட்டுமே (jpg/png/webp/gif) அனுமதிக்கப்படும்'), ok);
+    const ok = /jpeg|jpg|png|webp|gif|avif/.test(file.mimetype);
+    cb(ok ? null : new Error('படங்கள் மட்டுமே (jpg/png/webp/gif/avif) அனுமதிக்கப்படும்'), ok);
   }
 });
 
@@ -255,22 +255,39 @@ app.get('/news/:slug', (req, res) => {
     article,
     related,
     comments,
-    commented: req.query.commented === '1',
+    commented: req.query.commented || null,
     banner: getBanner('article')
   });
 });
+
+// A comment is auto-published unless it contains one of the admin's
+// banned words (simple case-insensitive substring match) — those get
+// held back (approved = 0) for manual review on the Comments admin page.
+function containsBannedWord(text) {
+  const list = getSetting('banned_words', '');
+  if (!list) return false;
+  const words = list.split(/[\n,]/).map(w => w.trim().toLowerCase()).filter(Boolean);
+  if (!words.length) return false;
+  const lower = (text || '').toLowerCase();
+  return words.some(w => lower.includes(w));
+}
 
 app.post('/news/:slug/comment', (req, res) => {
   const article = db.prepare('SELECT id FROM articles WHERE slug = ? AND published = 1').get(req.params.slug);
   if (!article) return res.status(404).render('404');
 
   const { name, comment } = req.body;
+  let status = null;
   if (name && name.trim() && comment && comment.trim()) {
-    db.prepare('INSERT INTO comments (article_id, name, comment) VALUES (?, ?, ?)')
-      .run(article.id, name.trim().slice(0, 80), comment.trim().slice(0, 1000));
+    const cleanName = name.trim().slice(0, 80);
+    const cleanComment = comment.trim().slice(0, 1000);
+    const blocked = containsBannedWord(cleanName) || containsBannedWord(cleanComment);
+    db.prepare('INSERT INTO comments (article_id, name, comment, approved) VALUES (?, ?, ?, ?)')
+      .run(article.id, cleanName, cleanComment, blocked ? 0 : 1);
+    status = blocked ? 'blocked' : 'posted';
   }
 
-  res.redirect(`/news/${req.params.slug}?commented=1#comments`);
+  res.redirect(`/news/${req.params.slug}?commented=${status || 'skip'}#comments`);
 });
 
 // =====================================================
@@ -598,7 +615,17 @@ app.get('/admin/comments', requireAdmin, (req, res) => {
     FROM comments c LEFT JOIN articles a ON c.article_id = a.id
     ORDER BY c.approved ASC, c.created_at DESC
   `).all();
-  res.render('admin/comments', { comments });
+  res.render('admin/comments', { comments, bannedWords: getSetting('banned_words', ''), saved: null });
+});
+
+app.post('/admin/comments/banned-words', requireAdmin, (req, res) => {
+  setSetting('banned_words', (req.body.banned_words || '').trim());
+  const comments = db.prepare(`
+    SELECT c.*, a.title AS article_title, a.slug AS article_slug
+    FROM comments c LEFT JOIN articles a ON c.article_id = a.id
+    ORDER BY c.approved ASC, c.created_at DESC
+  `).all();
+  res.render('admin/comments', { comments, bannedWords: getSetting('banned_words', ''), saved: 'சேமிக்கப்பட்டது' });
 });
 
 app.post('/admin/comments/:id/approve', requireAdmin, (req, res) => {

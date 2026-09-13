@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS comments (
   article_id INTEGER NOT NULL,
   name TEXT NOT NULL,
   comment TEXT NOT NULL,
-  approved INTEGER DEFAULT 0,
+  approved INTEGER DEFAULT 1,
   created_at TEXT DEFAULT (datetime('now')),
   FOREIGN KEY(article_id) REFERENCES articles(id)
 );

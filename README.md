@@ -143,19 +143,31 @@ title கொடுத்தா, URL-உம் Tamil-லேயே இருக்
 இருந்தது — அதை fix பண்ணிட்டேன். Reader-facing எந்த URL-லேயும்
 "article" வார்த்தை இனி வராது (`/news/...` prefix use பண்றோம்).
 
-## Reader Comments
+## Reader Comments + Banned Words Filter
 
 ஒவ்வொரு செய்தி பக்கத்திலும் keezhe ஒரு "கருத்துகள்" section இருக்கு
-— readers பெயர் + comment type பண்ணி submit பண்ணலாம். **Spam தடுக்க,
-comment உடனே public-ஆ காட்டப்படாது** — Admin → **Comments** page-ல்
-approve பண்ணின பிறகுதான் andha comment site-ல் தெரியும். Admin nav-ல்
-"Comments" link-க்கு பக்கத்தில் எத்தனை pending comments இருக்கு-ன்னு
-ஒரு சிவப்பு எண் (badge) தெரியும்.
+— readers பெயர் + comment type பண்ணி submit பண்ணலாம். **Comment
+உடனே public-ஆ காட்டப்படும்** — admin approve பண்ண தேவையில்லை.
+
+Admin → **Comments** page-ல் மேலே ஒரு "Banned Words" list வைக்கலாம்
+(comma அல்லது புதிய வரியில் பிரிச்சு). அந்த வார்த்தை எதுவும் ஒரு
+comment-ல் (பெயர் அல்லது message-ல்) இருந்தா, அது **automatic-ஆ
+block** ஆகி (site-ல் தெரியாம) admin page-ல் "🚫 Blocked" status-ஆ
+காட்டப்படும் — நீங்க பாத்து Approve (தவறுதலா block ஆனா) அல்லது
+Delete பண்ணலாம். Blocked இல்லாத எந்த comment-ஐயும் எப்பொழுது
+வேணும்னாலும் Delete பண்ணலாம் (உதாரணமா, யாராவது தகாத வார்த்தை
+பண்ணி பிறகு comment போட்டா).
 
 ## View Count Remove பண்ணப்பட்டது
 
 செய்தி பக்கத்தில் "X பார்வைகள்" எண் இனி காட்டப்படாது (database-ல்
 track ஆகிக்கிட்டே இருக்கும், UI-ல் மட்டும் hide பண்ணிருக்கேன்).
+
+## Image Upload — AVIF Support
+
+Image upload செய்யும்போது jpg/png/webp/gif மட்டுமல்லாம் **AVIF**
+format-உம் ஏற்கப்படும் (article images, banner ads எல்லாத்திற்கும்).
+
 
 ## செய்தி Pin செய்ய (Fixed position)
 

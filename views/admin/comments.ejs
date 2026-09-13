@@ -8,7 +8,23 @@
 
   <main class="container admin-main">
     <h1>Comments (<%= comments.length %>)</h1>
-    <p class="hint">புதிய comment பண்ணினா, admin approve பண்ணும் வரைக்கும் அது site-ல் தெரியாது. Spam/தேவையில்லாத comment-ஐ delete பண்ணலாம்.</p>
+    <p class="hint">
+      Readers comment போட்ட உடனே அது automatic-ஆ site-ல் தெரியும் (approve
+      பண்ண தேவையில்லை). கீழே கொடுக்கிற "Banned Words" list-ல் இருக்கிற
+      வார்த்தை எதுவும் comment-ல் இருந்தா, அது automatic-ஆ blocked-ஆகி
+      (site-ல் தெரியாம) இங்க pending-ஆ காட்டப்படும் — நீங்க பாத்து
+      Approve/Delete பண்ணலாம். வேணும்-ன்னா எந்த comment-ஐயும் எப்பொழுது
+      வேணும்னாலும் delete பண்ணலாம்.
+    </p>
+
+    <% if (saved) { %><div class="alert alert-success"><%= saved %></div><% } %>
+
+    <form method="post" action="/admin/comments/banned-words" class="admin-form" style="max-width:500px; margin-bottom:32px;">
+      <label>Banned Words (comma அல்லது புதிய வரியில் பிரிக்கவும்)</label>
+      <textarea name="banned_words" rows="3" placeholder="e.g. வார்த்தை1, வார்த்தை2"><%= bannedWords %></textarea>
+      <p class="hint">இதுல இருக்கிற வார்த்தை comment-ல் (பெயர் அல்லது message-ல்) இருந்தா, அது automatic-ஆ block ஆகும்.</p>
+      <button type="submit" class="btn btn-primary">சேமி</button>
+    </form>
 
     <% if (comments.length === 0) { %>
       <div class="empty-state"><p>இன்னும் comments இல்லை.</p></div>
@@ -32,7 +48,7 @@
               <td><a href="/news/<%= c.article_slug %>" target="_blank"><%= c.article_title %></a></td>
               <td>
                 <% if (c.approved) { %><span class="badge badge-live">வெளியிடப்பட்டது</span>
-                <% } else { %><span class="badge badge-draft">Pending</span><% } %>
+                <% } else { %><span class="badge badge-draft">&#128683; Blocked</span><% } %>
               </td>
               <td><%= new Date(c.created_at).toLocaleDateString('ta-IN') %></td>
               <td class="admin-row-actions">

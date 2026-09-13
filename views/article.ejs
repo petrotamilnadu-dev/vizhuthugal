@@ -28,8 +28,10 @@
     <section class="comments-section" id="comments">
       <h2 class="section-title">கருத்துகள் (<%= comments.length %>)</h2>
 
-      <% if (commented) { %>
-        <div class="alert alert-success">உங்கள் கருத்து பதிவு செய்யப்பட்டது — மதிப்பாய்வுக்குப் பிறகு இங்கு தெரியும்.</div>
+      <% if (commented === 'posted') { %>
+        <div class="alert alert-success">உங்கள் கருத்து பதிவு செய்யப்பட்டது!</div>
+      <% } else if (commented === 'blocked') { %>
+        <div class="alert alert-error">உங்கள் கருத்து மதிப்பாய்வுக்காக வைக்கப்பட்டுள்ளது.</div>
       <% } %>
 
       <% if (comments.length === 0) { %>
