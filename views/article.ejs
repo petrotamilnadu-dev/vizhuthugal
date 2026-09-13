@@ -14,8 +14,6 @@
       <h1><%= article.title %></h1>
       <div class="article-meta">
         <time><%= new Date(article.created_at).toLocaleDateString('ta-IN', { year: 'numeric', month: 'long', day: 'numeric' }) %></time>
-        <span>&middot;</span>
-        <span><%= article.views %> பார்வைகள்</span>
       </div>
       <% if (article.image) { %>
         <img class="article-image" src="<%= article.image %>" alt="<%= article.title %>">
@@ -26,6 +24,38 @@
     </article>
 
     <%- include('partials/banner', { banner: banner }) %>
+
+    <section class="comments-section" id="comments">
+      <h2 class="section-title">கருத்துகள் (<%= comments.length %>)</h2>
+
+      <% if (commented) { %>
+        <div class="alert alert-success">உங்கள் கருத்து பதிவு செய்யப்பட்டது — மதிப்பாய்வுக்குப் பிறகு இங்கு தெரியும்.</div>
+      <% } %>
+
+      <% if (comments.length === 0) { %>
+        <p class="hint">முதல் கருத்தை பதிவு செய்யுங்கள்.</p>
+      <% } else { %>
+        <div class="comment-list">
+          <% comments.forEach(function(c) { %>
+            <div class="comment-item">
+              <div class="comment-item-head">
+                <span class="comment-name"><%= c.name %></span>
+                <span class="comment-date"><%= new Date(c.created_at).toLocaleDateString('ta-IN') %></span>
+              </div>
+              <p class="comment-text"><%= c.comment %></p>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+
+      <form method="post" action="/news/<%= article.slug %>/comment" class="comment-form">
+        <label>பெயர்</label>
+        <input type="text" name="name" required maxlength="80" placeholder="உங்கள் பெயர்">
+        <label>கருத்து</label>
+        <textarea name="comment" rows="4" required maxlength="1000" placeholder="உங்கள் கருத்தை பதிவு செய்யுங்கள்..."></textarea>
+        <button type="submit" class="btn btn-primary">கருத்தை பதிவிடு</button>
+      </form>
+    </section>
 
     <% if (related.length) { %>
       <h2 class="section-title">தொடர்புடைய செய்திகள்</h2>

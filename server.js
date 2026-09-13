@@ -38,6 +38,9 @@ app.use((req, res, next) => {
   res.locals.SITE_TAGLINE = SITE_TAGLINE;
   res.locals.categories = db.prepare('SELECT * FROM categories ORDER BY sort_order, name').all();
   res.locals.isAdmin = !!(req.session && req.session.adminId);
+  if (res.locals.isAdmin) {
+    res.locals.PENDING_COMMENTS_COUNT = db.prepare('SELECT COUNT(*) AS c FROM comments WHERE approved = 0').get().c;
+  }
   res.locals.SOCIAL_INSTAGRAM = getSetting('social_instagram_url', '');
   res.locals.SOCIAL_FACEBOOK = getSetting('social_facebook_url', '');
   res.locals.SOCIAL_YOUTUBE = getSetting('social_youtube_url', '');
@@ -244,7 +247,30 @@ app.get('/news/:slug', (req, res) => {
     ORDER BY created_at DESC LIMIT 4
   `).all(article.category_id, article.id);
 
-  res.render('article', { article, related, banner: getBanner('article') });
+  const comments = db.prepare(`
+    SELECT * FROM comments WHERE article_id = ? AND approved = 1 ORDER BY created_at ASC
+  `).all(article.id);
+
+  res.render('article', {
+    article,
+    related,
+    comments,
+    commented: req.query.commented === '1',
+    banner: getBanner('article')
+  });
+});
+
+app.post('/news/:slug/comment', (req, res) => {
+  const article = db.prepare('SELECT id FROM articles WHERE slug = ? AND published = 1').get(req.params.slug);
+  if (!article) return res.status(404).render('404');
+
+  const { name, comment } = req.body;
+  if (name && name.trim() && comment && comment.trim()) {
+    db.prepare('INSERT INTO comments (article_id, name, comment) VALUES (?, ?, ?)')
+      .run(article.id, name.trim().slice(0, 80), comment.trim().slice(0, 1000));
+  }
+
+  res.redirect(`/news/${req.params.slug}?commented=1#comments`);
 });
 
 // =====================================================
@@ -563,6 +589,26 @@ app.post('/admin/rates', requireAdmin, (req, res) => {
     rate_updated_at: updatedAt ? new Date(updatedAt).toLocaleDateString('ta-IN', { year: 'numeric', month: 'long', day: 'numeric' }) : null,
     saved: 'சேமிக்கப்பட்டது'
   });
+});
+
+// ---- Comments moderation ----
+app.get('/admin/comments', requireAdmin, (req, res) => {
+  const comments = db.prepare(`
+    SELECT c.*, a.title AS article_title, a.slug AS article_slug
+    FROM comments c LEFT JOIN articles a ON c.article_id = a.id
+    ORDER BY c.approved ASC, c.created_at DESC
+  `).all();
+  res.render('admin/comments', { comments });
+});
+
+app.post('/admin/comments/:id/approve', requireAdmin, (req, res) => {
+  db.prepare('UPDATE comments SET approved = 1 WHERE id = ?').run(req.params.id);
+  res.redirect('/admin/comments');
+});
+
+app.post('/admin/comments/:id/delete', requireAdmin, (req, res) => {
+  db.prepare('DELETE FROM comments WHERE id = ?').run(req.params.id);
+  res.redirect('/admin/comments');
 });
 
 // ---- Responsive device preview ----

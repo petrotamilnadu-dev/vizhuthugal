@@ -49,6 +49,16 @@ CREATE TABLE IF NOT EXISTS settings (
   key TEXT PRIMARY KEY,
   value TEXT
 );
+
+CREATE TABLE IF NOT EXISTS comments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  article_id INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  comment TEXT NOT NULL,
+  approved INTEGER DEFAULT 0,
+  created_at TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY(article_id) REFERENCES articles(id)
+);
 `);
 
 // Migration safety net: if articles table already existed (from an earlier

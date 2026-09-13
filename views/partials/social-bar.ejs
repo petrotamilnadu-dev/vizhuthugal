@@ -5,7 +5,7 @@
   <div class="container info-belt-inner">
     <% if (hasHeadlines) { %>
       <div class="headline-ticker">
-        <span class="headline-ticker-label">செய்திகள்</span>
+        <span class="headline-ticker-label">Headlines</span>
         <div class="headline-ticker-viewport" id="headlineTicker">
           <% LATEST_HEADLINES.forEach(function(h, i) { %>
             <a href="/news/<%= h.slug %>" class="headline-ticker-item<%= i === 0 ? ' active' : '' %>"><%= h.title %></a>

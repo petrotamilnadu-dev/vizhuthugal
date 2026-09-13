@@ -44,7 +44,7 @@ img { max-width: 100%; display: block; }
 .header-inner { display: flex; align-items: center; gap: 16px; padding: 14px 20px; flex-wrap: wrap; }
 .brand { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
 .brand-logo { height: 58px; width: auto; border-radius: 10px; }
-.brand-copy { display: flex; flex-direction: column; gap: 1px; line-height: 1.2; }
+.brand-copy { display: flex; flex-direction: column; gap: 5px; line-height: 1.2; }
 
 .brand-text-rotate { position: relative; display: block; height: 1.7em; overflow: hidden; min-width: 230px; }
 .brand-name {
@@ -225,6 +225,22 @@ img { max-width: 100%; display: block; }
 .article-image { width: 100%; border-radius: 12px; margin-bottom: 20px; max-height: 460px; object-fit: cover; }
 .article-content p { margin: 0 0 16px; font-size: 1.05rem; }
 
+/* ===== Comments ===== */
+.comments-section { max-width: 760px; margin: 0 auto 20px; }
+.comment-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
+.comment-item { background: var(--paper-raised); border-radius: 12px; padding: 14px 18px; box-shadow: 0 1px 3px rgba(23,35,61,.06); }
+.comment-item-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.comment-name { font-weight: 700; font-size: .92rem; }
+.comment-date { font-size: .75rem; color: var(--ink-soft); }
+.comment-text { margin: 0; font-size: .95rem; color: var(--ink); line-height: 1.5; }
+.comment-form { max-width: 480px; }
+.comment-form label { display: block; margin: 14px 0 6px; font-weight: 600; font-size: .88rem; }
+.comment-form input, .comment-form textarea {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: var(--font-tamil); font-size: .95rem;
+}
+.comment-form textarea { resize: vertical; }
+.comment-form button { margin-top: 16px; }
+
 /* ===== Footer ===== */
 .site-footer { background: var(--navy-deep); color: rgba(255,255,255,.75); margin-top: 60px; }
 .footer-inner { text-align: center; padding: 56px 20px 44px; }
@@ -267,15 +283,14 @@ img { max-width: 100%; display: block; }
 
 .social-icons { display: flex; gap: 10px; flex-shrink: 0; }
 .social-icon {
-  width: 32px; height: 32px; border-radius: 999px; display: flex; align-items: center; justify-content: center;
-  color: rgba(255,255,255,.75); border: 1px solid rgba(255,255,255,.14); transition: all .18s;
+  width: 34px; height: 34px; border-radius: 999px; display: flex; align-items: center; justify-content: center;
+  color: #fff; transition: all .18s; box-shadow: 0 1px 4px rgba(0,0,0,.25);
 }
-.social-icon svg { width: 16px; height: 16px; }
-.social-icon:hover { color: #fff; transform: translateY(-2px); }
-.social-instagram:hover { background: linear-gradient(135deg,#f0982e,#c22a86); border-color: transparent; }
-.social-facebook:hover { background: #1877f2; border-color: transparent; }
-.social-youtube:hover { background: #ff0000; border-color: transparent; }
-
+.social-icon svg { width: 17px; height: 17px; }
+.social-icon:hover { transform: translateY(-2px) scale(1.06); box-shadow: 0 4px 10px rgba(0,0,0,.35); }
+.social-instagram { background: linear-gradient(135deg,#f0982e,#c22a86); }
+.social-facebook { background: #1877f2; }
+.social-youtube { background: #ff0000; }
 /* ===== Instagram embed grid ===== */
 .instagram-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-bottom: 30px; }
 .instagram-grid .instagram-media { width: 100% !important; margin: 0 !important; border-radius: 16px; overflow: hidden; }
@@ -413,6 +428,10 @@ img { max-width: 100%; display: block; }
 .admin-nav { display: flex; align-items: center; gap: 16px; font-size: .88rem; overflow-x: auto; white-space: nowrap; max-width: 70vw; }
 .admin-nav a { color: rgba(255,255,255,.8); }
 .admin-nav a.active, .admin-nav a:hover { color: var(--orange); }
+.nav-badge {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px;
+  background: #e53935; color: #fff; font-size: .68rem; font-weight: 700; border-radius: 999px; padding: 0 5px;
+}
 .link-logout, .link-danger { background: none; border: 0; cursor: pointer; font-family: inherit; font-size: inherit; color: inherit; padding: 0; }
 .link-danger { color: var(--danger); }
 .admin-nav .link-logout { color: rgba(255,255,255,.8); }

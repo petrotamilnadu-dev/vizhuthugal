@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <%- include('../partials/head', { pageTitle: 'Comments' }) %>
+</head>
+<body class="admin-body">
+  <%- include('../partials/admin-nav', { active: 'comments' }) %>
+
+  <main class="container admin-main">
+    <h1>Comments (<%= comments.length %>)</h1>
+    <p class="hint">புதிய comment பண்ணினா, admin approve பண்ணும் வரைக்கும் அது site-ல் தெரியாது. Spam/தேவையில்லாத comment-ஐ delete பண்ணலாம்.</p>
+
+    <% if (comments.length === 0) { %>
+      <div class="empty-state"><p>இன்னும் comments இல்லை.</p></div>
+    <% } else { %>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>பெயர்</th>
+            <th>Comment</th>
+            <th>செய்தி</th>
+            <th>நிலை</th>
+            <th>தேதி</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% comments.forEach(function(c) { %>
+            <tr>
+              <td><%= c.name %></td>
+              <td style="max-width:280px; white-space:normal;"><%= c.comment %></td>
+              <td><a href="/news/<%= c.article_slug %>" target="_blank"><%= c.article_title %></a></td>
+              <td>
+                <% if (c.approved) { %><span class="badge badge-live">வெளியிடப்பட்டது</span>
+                <% } else { %><span class="badge badge-draft">Pending</span><% } %>
+              </td>
+              <td><%= new Date(c.created_at).toLocaleDateString('ta-IN') %></td>
+              <td class="admin-row-actions">
+                <% if (!c.approved) { %>
+                  <form method="post" action="/admin/comments/<%= c.id %>/approve">
+                    <button type="submit" class="link-danger" style="color:#1e6b35">Approve</button>
+                  </form>
+                <% } %>
+                <form method="post" action="/admin/comments/<%= c.id %>/delete" onsubmit="return confirm('இந்த comment-ஐ நீக்கவா?')">
+                  <button type="submit" class="link-danger">நீக்க</button>
+                </form>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } %>
+  </main>
+</body>
+</html>

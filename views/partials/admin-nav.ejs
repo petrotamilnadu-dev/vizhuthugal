@@ -9,6 +9,7 @@
       <a href="/admin/homepage-order" class="<%= active === 'order' ? 'active' : '' %>">முகப்பு வரிசை</a>
       <a href="/admin/banners" class="<%= active === 'banners' ? 'active' : '' %>">Banner Ads</a>
       <a href="/admin/rates" class="<%= active === 'rates' ? 'active' : '' %>">Rates</a>
+      <a href="/admin/comments" class="<%= active === 'comments' ? 'active' : '' %>">Comments<% if (typeof PENDING_COMMENTS_COUNT !== 'undefined' && PENDING_COMMENTS_COUNT > 0) { %> <span class="nav-badge"><%= PENDING_COMMENTS_COUNT %></span><% } %></a>
       <a href="/admin/categories" class="<%= active === 'categories' ? 'active' : '' %>">பிரிவுகள்</a>
       <a href="/admin/social" class="<%= active === 'social' ? 'active' : '' %>">Social Media</a>
       <a href="/admin/preview" class="<%= active === 'preview' ? 'active' : '' %>">Preview</a>

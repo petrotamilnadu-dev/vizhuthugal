@@ -143,6 +143,20 @@ title கொடுத்தா, URL-உம் Tamil-லேயே இருக்
 இருந்தது — அதை fix பண்ணிட்டேன். Reader-facing எந்த URL-லேயும்
 "article" வார்த்தை இனி வராது (`/news/...` prefix use பண்றோம்).
 
+## Reader Comments
+
+ஒவ்வொரு செய்தி பக்கத்திலும் keezhe ஒரு "கருத்துகள்" section இருக்கு
+— readers பெயர் + comment type பண்ணி submit பண்ணலாம். **Spam தடுக்க,
+comment உடனே public-ஆ காட்டப்படாது** — Admin → **Comments** page-ல்
+approve பண்ணின பிறகுதான் andha comment site-ல் தெரியும். Admin nav-ல்
+"Comments" link-க்கு பக்கத்தில் எத்தனை pending comments இருக்கு-ன்னு
+ஒரு சிவப்பு எண் (badge) தெரியும்.
+
+## View Count Remove பண்ணப்பட்டது
+
+செய்தி பக்கத்தில் "X பார்வைகள்" எண் இனி காட்டப்படாது (database-ல்
+track ஆகிக்கிட்டே இருக்கும், UI-ல் மட்டும் hide பண்ணிருக்கேன்).
+
 ## செய்தி Pin செய்ய (Fixed position)
 
 ஒவ்வொரு செய்தியையும் add/edit பண்றப்போ "📌 Pin செய்" checkbox இருக்கு.
