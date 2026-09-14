@@ -206,13 +206,30 @@ app.get('/rates', (req, res) => {
   const gold = getSetting('rate_gold');
   const silver = getSetting('rate_silver');
   const updatedAt = getSetting('rate_updated_at');
+  const goldNum = gold ? parseFloat(gold) : null;
+  const silverNum = silver ? parseFloat(silver) : null;
+  const today = new Date().toISOString().slice(0, 10);
+
+  const historyRows = db.prepare(`
+    SELECT * FROM rate_history WHERE date != ? ORDER BY date DESC LIMIT 20
+  `).all(today);
+
+  const history = historyRows.map(row => ({
+    date: new Date(row.date).toLocaleDateString('ta-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+    gold: row.gold,
+    silver: row.silver,
+    goldDiff: (goldNum !== null && row.gold !== null) ? Math.round((goldNum - row.gold) * 100) / 100 : null,
+    silverDiff: (silverNum !== null && row.silver !== null) ? Math.round((silverNum - row.silver) * 100) / 100 : null
+  }));
+
   res.render('rates', {
     gold,
     silver,
     goldPavun: gold ? (parseFloat(gold) * 8).toLocaleString('en-IN') : null,
     updated: updatedAt
       ? new Date(updatedAt).toLocaleDateString('ta-IN', { day: 'numeric', month: 'long', year: 'numeric' })
-      : null
+      : null,
+    history
   });
 });
 
@@ -598,6 +615,14 @@ app.post('/admin/rates', requireAdmin, (req, res) => {
   setSetting('rate_gold', (rate_gold || '').trim());
   setSetting('rate_silver', (rate_silver || '').trim());
   setSetting('rate_updated_at', new Date().toISOString());
+
+  // Record today's rate into history (upsert — multiple saves on the same
+  // day just update that day's row rather than creating duplicates).
+  const today = new Date().toISOString().slice(0, 10);
+  db.prepare(`
+    INSERT INTO rate_history (date, gold, silver) VALUES (?, ?, ?)
+    ON CONFLICT(date) DO UPDATE SET gold = excluded.gold, silver = excluded.silver
+  `).run(today, parseFloat(rate_gold) || null, parseFloat(rate_silver) || null);
 
   const updatedAt = getSetting('rate_updated_at');
   res.render('admin/rates', {

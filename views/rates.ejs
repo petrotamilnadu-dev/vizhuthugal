@@ -33,6 +33,47 @@
         <p class="rate-page-updated"><%= updated %> அன்று புதுப்பிக்கப்பட்டது</p>
       <% } %>
       <p class="hint">விலை தினமும் மாறுபடும். துல்லியமான விலைக்கு உங்கள் அருகிலுள்ள நகை கடையில் உறுதி செய்யவும்.</p>
+
+      <% if (history && history.length) { %>
+        <h2 class="section-title">விலை வரலாறு (Price History)</h2>
+        <div class="rate-history-table-wrap">
+          <table class="rate-history-table">
+            <thead>
+              <tr>
+                <th>தேதி</th>
+                <th>தங்கம் (1g)</th>
+                <th>Current-ஓடு வித்தியாசம்</th>
+                <th>வெள்ளி (1g)</th>
+                <th>Current-ஓடு வித்தியாசம்</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% history.forEach(function(h) { %>
+                <tr>
+                  <td><%= h.date %></td>
+                  <td><% if (h.gold !== null) { %>&#8377;<%= h.gold %><% } else { %>&mdash;<% } %></td>
+                  <td>
+                    <% if (h.goldDiff !== null) { %>
+                      <% if (h.goldDiff > 0) { %><span class="diff-up">&#9650; &#8377;<%= h.goldDiff %></span>
+                      <% } else if (h.goldDiff < 0) { %><span class="diff-down">&#9660; &#8377;<%= Math.abs(h.goldDiff) %></span>
+                      <% } else { %><span class="diff-same">— மாற்றம் இல்லை</span><% } %>
+                    <% } else { %>&mdash;<% } %>
+                  </td>
+                  <td><% if (h.silver !== null) { %>&#8377;<%= h.silver %><% } else { %>&mdash;<% } %></td>
+                  <td>
+                    <% if (h.silverDiff !== null) { %>
+                      <% if (h.silverDiff > 0) { %><span class="diff-up">&#9650; &#8377;<%= h.silverDiff %></span>
+                      <% } else if (h.silverDiff < 0) { %><span class="diff-down">&#9660; &#8377;<%= Math.abs(h.silverDiff) %></span>
+                      <% } else { %><span class="diff-same">— மாற்றம் இல்லை</span><% } %>
+                    <% } else { %>&mdash;<% } %>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+        <p class="hint">வித்தியாசம் = இன்றைய விலை − அந்த தேதியின் விலை. &#9650; = இன்று விலை அதிகம், &#9660; = இன்று விலை குறைவு.</p>
+      <% } %>
     <% } %>
   </main>
 

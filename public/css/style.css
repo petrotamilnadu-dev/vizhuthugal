@@ -356,6 +356,16 @@ img { max-width: 100%; display: block; }
 .rate-card-row strong { font-size: 1.1rem; }
 .rate-page-updated { color: var(--ink-soft); font-size: .85rem; margin: 4px 0 18px; }
 
+/* ===== Rate history table ===== */
+.rate-history-table-wrap { overflow-x: auto; margin: 20px 0 8px; }
+.rate-history-table { width: 100%; border-collapse: collapse; background: var(--paper-raised); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; min-width: 560px; }
+.rate-history-table th, .rate-history-table td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--line); font-size: .87rem; white-space: nowrap; }
+.rate-history-table th { background: #f0ece2; font-weight: 600; }
+.rate-history-table tbody tr:last-child td { border-bottom: 0; }
+.diff-up { color: #c0392b; font-weight: 600; }
+.diff-down { color: #1e8a4c; font-weight: 600; }
+.diff-same { color: var(--ink-soft); }
+
 /* ===== Featured video (homepage) ===== */
 .featured-video {
   display: block; max-width: 640px; margin: 0 auto 16px; cursor: pointer; background: var(--paper-raised);

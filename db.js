@@ -59,6 +59,14 @@ CREATE TABLE IF NOT EXISTS comments (
   created_at TEXT DEFAULT (datetime('now')),
   FOREIGN KEY(article_id) REFERENCES articles(id)
 );
+
+CREATE TABLE IF NOT EXISTS rate_history (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  date TEXT UNIQUE NOT NULL,
+  gold REAL,
+  silver REAL,
+  created_at TEXT DEFAULT (datetime('now'))
+);
 `);
 
 // Migration safety net: if articles table already existed (from an earlier
