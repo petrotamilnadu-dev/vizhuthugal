@@ -9,6 +9,7 @@ const { db, UPLOADS_DIR, nextTopPosition } = require('./db');
 const { getSetting, setSetting } = require('./settings');
 const { getLatestVideos: getInstagramVideos } = require('./instagram');
 const { getLatestVideos: getYoutubeVideos, getVideoInfo, getLiveVideo, extractVideoId: extractYoutubeId } = require('./youtube');
+const { watermarkImage } = require('./watermark');
 
 const app = express();
 app.set('trust proxy', 1); // needed on Render so req.protocol reports https correctly (for og:image URLs etc.)
@@ -404,7 +405,7 @@ app.get('/admin/articles/new', requireAdmin, (req, res) => {
 
 const articleUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'gallery_images', maxCount: 10 }]);
 
-app.post('/admin/articles/new', requireAdmin, articleUpload, (req, res) => {
+app.post('/admin/articles/new', requireAdmin, articleUpload, async (req, res) => {
   const { title, summary, content, category_id, published, pinned, youtube_video_url } = req.body;
   if (!title || !content) {
     const categories = db.prepare('SELECT * FROM categories ORDER BY sort_order, name').all();
@@ -426,6 +427,11 @@ app.post('/admin/articles/new', requireAdmin, articleUpload, (req, res) => {
     galleryFiles.forEach((f, i) => insertImg.run(result.lastInsertRowid, `/uploads/${f.filename}`, i));
   }
 
+  // Watermark after the DB rows are saved — a slow/failed watermark should
+  // never block the article from being published.
+  const allNewFiles = [imageFile, ...galleryFiles].filter(Boolean);
+  await Promise.all(allNewFiles.map(f => watermarkImage(path.join(UPLOADS_DIR, f.filename))));
+
   res.redirect('/admin');
 });
 
@@ -437,7 +443,7 @@ app.get('/admin/articles/:id/edit', requireAdmin, (req, res) => {
   res.render('admin/article-form', { article, categories, galleryImages, error: null });
 });
 
-app.post('/admin/articles/:id/edit', requireAdmin, articleUpload, (req, res) => {
+app.post('/admin/articles/:id/edit', requireAdmin, articleUpload, async (req, res) => {
   const existing = db.prepare('SELECT * FROM articles WHERE id = ?').get(req.params.id);
   if (!existing) return res.redirect('/admin');
 
@@ -477,6 +483,9 @@ app.post('/admin/articles/:id/edit', requireAdmin, articleUpload, (req, res) => 
     const insertImg = db.prepare('INSERT INTO article_images (article_id, image, sort_order) VALUES (?, ?, ?)');
     galleryFiles.forEach(f => { insertImg.run(existing.id, `/uploads/${f.filename}`, nextOrder); nextOrder++; });
   }
+
+  const allNewFiles = [imageFile, ...galleryFiles].filter(Boolean);
+  await Promise.all(allNewFiles.map(f => watermarkImage(path.join(UPLOADS_DIR, f.filename))));
 
   res.redirect('/admin');
 });

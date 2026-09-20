@@ -202,6 +202,22 @@ play ஆகும். Video link காலியா விட்டா, andha se
 இது `/videos` page-ல் தோன்றும் channel-oda முழு feed-ஐ விட வேற —
 இது ஒரு specific news-க்கு மட்டும் ஒரு specific video attach பண்றது.
 
+## Image Watermark
+
+News article image (featured image) மற்றும் gallery images upload
+பண்ணும்போது, **automatic-ஆ** ஒரு "vizhuthugal.live" watermark band
+கீழ பகுதியில் சேர்க்கப்படும் (semi-transparent dark strip-ல் domain
+name repeat ஆகி, full width-ல் தெரியும்). இது server-side-லேயே நடக்கும்
+— admin எதுவும் தனியா பண்ண தேவையில்லை. (Banner ad images-க்கு watermark
+இல்லை — அவை வேற தரப்பினரின் ad creative-ஆ இருக்கலாம் என்பதால்.)
+
+இது `sharp` nu ஒரு image-processing library use பண்றது (package.json-ல்
+already சேர்த்திருக்கேன், `npm install` பண்ணும்போது தானாகவே கிடைக்கும்).
+better-sqlite3 மாதிரியே, இதுவும் Node version-க்கு specific-ஆ prebuilt
+binary தேவைப்படும் — Render-ல் `NODE_VERSION=20` already set பண்ணி
+இருந்தா (README-ல் முன்பே சொன்ன fix), இதுவும் problem இல்லாம வேலை
+செய்யும்.
+
 ## Social Media Share (WhatsApp/Facebook) + Link Preview Thumbnail
 
 ஒவ்வொரு செய்தி பக்கத்திலும் தலைப்புக்கு கீழே **WhatsApp, Facebook,
