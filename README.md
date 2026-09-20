@@ -202,6 +202,24 @@ play ஆகும். Video link காலியா விட்டா, andha se
 இது `/videos` page-ல் தோன்றும் channel-oda முழு feed-ஐ விட வேற —
 இது ஒரு specific news-க்கு மட்டும் ஒரு specific video attach பண்றது.
 
+## Social Media Share (WhatsApp/Facebook) + Link Preview Thumbnail
+
+ஒவ்வொரு செய்தி பக்கத்திலும் தலைப்புக்கு கீழே **WhatsApp, Facebook,
+Copy Link** — 3 share buttons இருக்கு. Click பண்ணா அந்த செய்தியின்
+title + link நேரடியா share panna ready-ஆ open ஆகும்.
+
+இதோடு, ஒவ்வொரு செய்தி பக்கத்திலும் **Open Graph meta tags**
+(WhatsApp/Facebook/Telegram போன்ற apps தான் link preview எப்படி
+காட்டணும்-ன்னு தெரிஞ்சுக்கிற standard tags) automatic-ஆ சேர்க்கப்பட்டு
+இருக்கு. இதனால்:
+- Link share பண்ணும்போது, செய்தியோட **படம் thumbnail-ஆ** தெரியும்
+- Title Tamil font-ல் **சரியா readable-ஆ** தெரியும் (raw URL/garbled
+  text காட்டாம)
+- Summary (இல்ல content-ன் முதல் வரிகள்) description-ஆ தெரியும்
+
+இது வேலை பண்ண, site custom domain-ல் (https://) live-ஆ இருக்கணும் —
+Render-ல deploy பண்ணின உடனே இது தானாகவே வேலை செய்யும்.
+
 ## செய்தி Pin செய்ய (Fixed position)
 
 ஒவ்வொரு செய்தியையும் add/edit பண்றப்போ "📌 Pin செய்" checkbox இருக்கு.

@@ -11,6 +11,7 @@ const { getLatestVideos: getInstagramVideos } = require('./instagram');
 const { getLatestVideos: getYoutubeVideos, getVideoInfo, getLiveVideo, extractVideoId: extractYoutubeId } = require('./youtube');
 
 const app = express();
+app.set('trust proxy', 1); // needed on Render so req.protocol reports https correctly (for og:image URLs etc.)
 const PORT = process.env.PORT || 3000;
 const SITE_NAME = process.env.SITE_NAME || 'விழுதுகள் Media';
 const SITE_NAME_EN = process.env.SITE_NAME_EN || 'Vizhuthugal Media';
@@ -53,6 +54,8 @@ app.use((req, res, next) => {
     ? new Date(rateUpdatedAt).toLocaleDateString('ta-IN', { day: 'numeric', month: 'short', year: 'numeric' })
     : null;
   res.locals.LATEST_HEADLINES = db.prepare('SELECT title, slug FROM articles WHERE published = 1 ORDER BY created_at DESC LIMIT 6').all();
+  res.locals.SITE_URL = `${req.protocol}://${req.get('host')}`;
+  res.locals.CURRENT_URL = res.locals.SITE_URL + req.originalUrl;
   next();
 });
 
@@ -311,6 +314,10 @@ app.get('/news/:slug', async (req, res) => {
     }
   }
 
+  const ogDescription = (article.summary && article.summary.trim())
+    || (article.content || '').replace(/\s+/g, ' ').trim().slice(0, 160);
+  const ogImage = article.image ? (res.locals.SITE_URL + article.image) : undefined;
+
   res.render('article', {
     article,
     related,
@@ -318,7 +325,11 @@ app.get('/news/:slug', async (req, res) => {
     galleryImages,
     relatedVideo,
     commented: req.query.commented || null,
-    banner: getBanner('article')
+    banner: getBanner('article'),
+    ogTitle: article.title,
+    ogDescription,
+    ogImage,
+    ogType: 'article'
   });
 });
 

@@ -223,6 +223,19 @@ img { max-width: 100%; display: block; }
 .article-page h1 { font-size: 1.9rem; margin: 12px 0 10px; line-height: 1.35; }
 .article-meta { color: var(--ink-soft); font-size: .85rem; display: flex; gap: 8px; margin-bottom: 18px; }
 .article-image { width: 100%; border-radius: 12px; margin-bottom: 20px; max-height: 460px; object-fit: cover; }
+
+/* ===== Share bar ===== */
+.share-bar { display: flex; align-items: center; gap: 10px; margin: 4px 0 20px; }
+.share-label { font-size: .82rem; color: var(--ink-soft); font-weight: 600; }
+.share-icon {
+  width: 34px; height: 34px; border-radius: 999px; display: flex; align-items: center; justify-content: center;
+  color: #fff; border: 0; cursor: pointer; transition: all .18s; box-shadow: 0 1px 4px rgba(0,0,0,.15);
+}
+.share-icon svg { width: 16px; height: 16px; }
+.share-icon:hover { transform: translateY(-2px) scale(1.06); }
+.share-whatsapp { background: #25D366; }
+.share-facebook { background: #1877f2; }
+.share-copy { background: var(--navy); }
 .article-content p { margin: 0 0 16px; font-size: 1.05rem; }
 .article-inline-image { width: 100%; border-radius: 12px; margin: 6px 0 22px; max-height: 460px; object-fit: cover; }
 
