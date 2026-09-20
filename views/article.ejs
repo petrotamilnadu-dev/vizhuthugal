@@ -19,8 +19,21 @@
         <img class="article-image" src="<%= article.image %>" alt="<%= article.title %>">
       <% } %>
       <div class="article-content">
-        <%- toParagraphs(article.content) %>
+        <%- renderContentWithImages(article.content, galleryImages) %>
       </div>
+
+      <% if (relatedVideo) { %>
+        <div class="related-video">
+          <h2 class="related-video-title">&#9654;&#65039; தொடர்புடைய வீடியோ</h2>
+          <div class="featured-video" onclick="vmOpenModal('<%= relatedVideo.videoId %>')">
+            <div class="featured-video-thumb">
+              <img src="<%= relatedVideo.thumbnail %>" alt="<%= relatedVideo.title %>">
+              <span class="play-btn">&#9658;</span>
+            </div>
+            <% if (relatedVideo.title) { %><h3><%= relatedVideo.title %></h3><% } %>
+          </div>
+        </div>
+      <% } %>
     </article>
 
     <%- include('partials/banner', { banner: banner }) %>
@@ -70,5 +83,6 @@
   </main>
 
   <%- include('partials/footer') %>
+  <%- include('partials/video-modal') %>
 </body>
 </html>

@@ -117,6 +117,38 @@ function toParagraphs(text) {
 }
 app.locals.toParagraphs = toParagraphs;
 
+// Splits content into paragraphs (same rule as toParagraphs) and spreads
+// any gallery images evenly through the gaps between them — so an article
+// with several uploaded images shows them woven through the text instead
+// of all bunched at the top.
+function renderContentWithImages(text, images) {
+  const paragraphs = (text || '')
+    .split(/\n{2,}/)
+    .map(p => p.trim())
+    .filter(Boolean);
+
+  if (!images || images.length === 0) {
+    return paragraphs.map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('\n');
+  }
+
+  const gap = Math.max(1, Math.ceil(paragraphs.length / (images.length + 1)));
+  let html = '';
+  let imgIdx = 0;
+  paragraphs.forEach((p, i) => {
+    html += `<p>${p.replace(/\n/g, '<br>')}</p>\n`;
+    if ((i + 1) % gap === 0 && imgIdx < images.length) {
+      html += `<img src="${images[imgIdx].image}" alt="" class="article-inline-image" loading="lazy">\n`;
+      imgIdx++;
+    }
+  });
+  while (imgIdx < images.length) {
+    html += `<img src="${images[imgIdx].image}" alt="" class="article-inline-image" loading="lazy">\n`;
+    imgIdx++;
+  }
+  return html;
+}
+app.locals.renderContentWithImages = renderContentWithImages;
+
 // A banner slot is "active" only when it has both an uploaded image and is
 // toggled on. Returns null when the slot shouldn't render.
 function getBanner(slot) {
@@ -247,7 +279,7 @@ app.get('/search', (req, res) => {
   res.render('search', { q, articles });
 });
 
-app.get('/news/:slug', (req, res) => {
+app.get('/news/:slug', async (req, res) => {
   const article = db.prepare(`
     SELECT a.*, c.name AS category_name, c.slug AS category_slug
     FROM articles a LEFT JOIN categories c ON a.category_id = c.id
@@ -268,10 +300,23 @@ app.get('/news/:slug', (req, res) => {
     SELECT * FROM comments WHERE article_id = ? AND approved = 1 ORDER BY created_at ASC
   `).all(article.id);
 
+  const galleryImages = db.prepare('SELECT * FROM article_images WHERE article_id = ? ORDER BY sort_order').all(article.id);
+
+  let relatedVideo = null;
+  if (article.youtube_video_id) {
+    try {
+      relatedVideo = await getVideoInfo(article.youtube_video_id);
+    } catch (e) {
+      console.error('[youtube] related video fetch error:', e.message);
+    }
+  }
+
   res.render('article', {
     article,
     related,
     comments,
+    galleryImages,
+    relatedVideo,
     commented: req.query.commented || null,
     banner: getBanner('article')
   });
@@ -343,22 +388,33 @@ app.get('/admin', requireAdmin, (req, res) => {
 // ---- Article create/edit ----
 app.get('/admin/articles/new', requireAdmin, (req, res) => {
   const categories = db.prepare('SELECT * FROM categories ORDER BY sort_order, name').all();
-  res.render('admin/article-form', { article: null, categories, error: null });
+  res.render('admin/article-form', { article: null, categories, galleryImages: [], error: null });
 });
 
-app.post('/admin/articles/new', requireAdmin, upload.single('image'), (req, res) => {
-  const { title, summary, content, category_id, published, pinned } = req.body;
+const articleUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'gallery_images', maxCount: 10 }]);
+
+app.post('/admin/articles/new', requireAdmin, articleUpload, (req, res) => {
+  const { title, summary, content, category_id, published, pinned, youtube_video_url } = req.body;
   if (!title || !content) {
     const categories = db.prepare('SELECT * FROM categories ORDER BY sort_order, name').all();
-    return res.render('admin/article-form', { article: req.body, categories, error: 'தலைப்பு மற்றும் உள்ளடக்கம் அவசியம்' });
+    return res.render('admin/article-form', { article: req.body, categories, galleryImages: [], error: 'தலைப்பு மற்றும் உள்ளடக்கம் அவசியம்' });
   }
   const slug = makeUniqueSlug(title);
-  const image = req.file ? `/uploads/${req.file.filename}` : null;
+  const imageFile = req.files && req.files.image && req.files.image[0];
+  const image = imageFile ? `/uploads/${imageFile.filename}` : null;
   const position = nextTopPosition();
-  db.prepare(`
-    INSERT INTO articles (title, slug, summary, content, image, category_id, published, position, pinned)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(title, slug, summary || '', content, image, category_id || null, published ? 1 : 0, position, pinned ? 1 : 0);
+  const youtubeVideoId = youtube_video_url ? extractYoutubeId(youtube_video_url.trim()) : null;
+  const result = db.prepare(`
+    INSERT INTO articles (title, slug, summary, content, image, category_id, published, position, pinned, youtube_video_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(title, slug, summary || '', content, image, category_id || null, published ? 1 : 0, position, pinned ? 1 : 0, youtubeVideoId);
+
+  const galleryFiles = (req.files && req.files.gallery_images) || [];
+  if (galleryFiles.length) {
+    const insertImg = db.prepare('INSERT INTO article_images (article_id, image, sort_order) VALUES (?, ?, ?)');
+    galleryFiles.forEach((f, i) => insertImg.run(result.lastInsertRowid, `/uploads/${f.filename}`, i));
+  }
+
   res.redirect('/admin');
 });
 
@@ -366,25 +422,28 @@ app.get('/admin/articles/:id/edit', requireAdmin, (req, res) => {
   const article = db.prepare('SELECT * FROM articles WHERE id = ?').get(req.params.id);
   if (!article) return res.redirect('/admin');
   const categories = db.prepare('SELECT * FROM categories ORDER BY sort_order, name').all();
-  res.render('admin/article-form', { article, categories, error: null });
+  const galleryImages = db.prepare('SELECT * FROM article_images WHERE article_id = ? ORDER BY sort_order').all(article.id);
+  res.render('admin/article-form', { article, categories, galleryImages, error: null });
 });
 
-app.post('/admin/articles/:id/edit', requireAdmin, upload.single('image'), (req, res) => {
+app.post('/admin/articles/:id/edit', requireAdmin, articleUpload, (req, res) => {
   const existing = db.prepare('SELECT * FROM articles WHERE id = ?').get(req.params.id);
   if (!existing) return res.redirect('/admin');
 
-  const { title, summary, content, category_id, published, pinned } = req.body;
+  const { title, summary, content, category_id, published, pinned, youtube_video_url } = req.body;
   if (!title || !content) {
     const categories = db.prepare('SELECT * FROM categories ORDER BY sort_order, name').all();
-    return res.render('admin/article-form', { article: { ...existing, ...req.body }, categories, error: 'தலைப்பு மற்றும் உள்ளடக்கம் அவசியம்' });
+    const galleryImages = db.prepare('SELECT * FROM article_images WHERE article_id = ? ORDER BY sort_order').all(existing.id);
+    return res.render('admin/article-form', { article: { ...existing, ...req.body }, categories, galleryImages, error: 'தலைப்பு மற்றும் உள்ளடக்கம் அவசியம்' });
   }
 
   let slug = existing.slug;
   if (title !== existing.title) slug = makeUniqueSlug(title, existing.id);
 
   let image = existing.image;
-  if (req.file) {
-    image = `/uploads/${req.file.filename}`;
+  const imageFile = req.files && req.files.image && req.files.image[0];
+  if (imageFile) {
+    image = `/uploads/${imageFile.filename}`;
     // remove old file if present
     if (existing.image) {
       const oldPath = path.join(UPLOADS_DIR, path.basename(existing.image));
@@ -392,21 +451,49 @@ app.post('/admin/articles/:id/edit', requireAdmin, upload.single('image'), (req,
     }
   }
 
+  const youtubeVideoId = youtube_video_url && youtube_video_url.trim() ? extractYoutubeId(youtube_video_url.trim()) : null;
+
   db.prepare(`
-    UPDATE articles SET title=?, slug=?, summary=?, content=?, image=?, category_id=?, published=?, pinned=?, updated_at=datetime('now')
+    UPDATE articles SET title=?, slug=?, summary=?, content=?, image=?, category_id=?, published=?, pinned=?, youtube_video_id=?, updated_at=datetime('now')
     WHERE id=?
-  `).run(title, slug, summary || '', content, image, category_id || null, published ? 1 : 0, pinned ? 1 : 0, existing.id);
+  `).run(title, slug, summary || '', content, image, category_id || null, published ? 1 : 0, pinned ? 1 : 0, youtubeVideoId, existing.id);
+
+  // Newly uploaded gallery images are appended after any existing ones.
+  const galleryFiles = (req.files && req.files.gallery_images) || [];
+  if (galleryFiles.length) {
+    const maxRow = db.prepare('SELECT MAX(sort_order) AS m FROM article_images WHERE article_id = ?').get(existing.id);
+    let nextOrder = (maxRow.m === null ? -1 : maxRow.m) + 1;
+    const insertImg = db.prepare('INSERT INTO article_images (article_id, image, sort_order) VALUES (?, ?, ?)');
+    galleryFiles.forEach(f => { insertImg.run(existing.id, `/uploads/${f.filename}`, nextOrder); nextOrder++; });
+  }
 
   res.redirect('/admin');
 });
 
+app.post('/admin/articles/:articleId/images/:imageId/delete', requireAdmin, (req, res) => {
+  const img = db.prepare('SELECT * FROM article_images WHERE id = ? AND article_id = ?').get(req.params.imageId, req.params.articleId);
+  if (img) {
+    const oldPath = path.join(UPLOADS_DIR, path.basename(img.image));
+    fs.unlink(oldPath, () => {});
+    db.prepare('DELETE FROM article_images WHERE id = ?').run(img.id);
+  }
+  res.redirect(`/admin/articles/${req.params.articleId}/edit`);
+});
+
 app.post('/admin/articles/:id/delete', requireAdmin, (req, res) => {
   const existing = db.prepare('SELECT * FROM articles WHERE id = ?').get(req.params.id);
+
   if (existing) {
     if (existing.image) {
       const oldPath = path.join(UPLOADS_DIR, path.basename(existing.image));
       fs.unlink(oldPath, () => {});
     }
+    const galleryImages = db.prepare('SELECT * FROM article_images WHERE article_id = ?').all(existing.id);
+    galleryImages.forEach(img => {
+      const p = path.join(UPLOADS_DIR, path.basename(img.image));
+      fs.unlink(p, () => {});
+    });
+    db.prepare('DELETE FROM article_images WHERE article_id = ?').run(existing.id);
     db.prepare('DELETE FROM articles WHERE id = ?').run(existing.id);
   }
   res.redirect('/admin');

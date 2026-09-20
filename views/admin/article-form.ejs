@@ -35,6 +35,26 @@
         <img src="<%= article.image %>" alt="current" class="current-image-preview">
       <% } %>
 
+      <label>கூடுதல் படங்கள் (Multiple Images) — உள்ளடக்கத்தில் பத்திகளுக்கு நடுவே தானாகவே காட்டப்படும்</label>
+      <input type="file" name="gallery_images" accept="image/*" multiple>
+      <p class="hint">ஒரு தடவையில் பல படங்களை select பண்ணலாம் (Ctrl/Cmd அழுத்தி). Select பண்ணின வரிசைப்படி, செய்தி content-ல் பத்திகளுக்கு நடுவே தானாகவே பரவி காட்டப்படும்.</p>
+      <% if (galleryImages && galleryImages.length) { %>
+        <div class="gallery-preview">
+          <% galleryImages.forEach(function(img) { %>
+            <div class="gallery-preview-item">
+              <img src="<%= img.image %>" alt="">
+              <form method="post" action="/admin/articles/<%= article.id %>/images/<%= img.id %>/delete" onsubmit="return confirm('இந்த படத்தை நீக்கவா?')">
+                <button type="submit" class="gallery-remove-btn" aria-label="Remove">&times;</button>
+              </form>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+
+      <label>தொடர்புடைய YouTube Video (Optional)</label>
+      <input type="text" name="youtube_video_url" value="<%= article && article.youtube_video_id ? 'https://www.youtube.com/watch?v=' + article.youtube_video_id : '' %>" placeholder="https://www.youtube.com/watch?v=...">
+      <p class="hint">இந்த செய்திக்கு தொடர்புடைய YouTube video link இருந்தா paste பண்ணுங்க — செய்தி பக்கத்தில் தனியா காட்டப்படும், click பண்ணா site-லேயே play ஆகும். காலியா விட்டா video காட்டப்படாது.</p>
+
       <label>உள்ளடக்கம் *</label>
       <textarea name="content" rows="14" required><%= article && article.content ? article.content : '' %></textarea>
       <p class="hint">ஒவ்வொரு பத்தியையும் காலி வரி (blank line) மூலம் பிரிக்கவும்.</p>

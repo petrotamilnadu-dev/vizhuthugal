@@ -180,6 +180,27 @@ duplicate rows வராது). இதனால் நாள்பட நாள
 காட்டப்படும் — கடந்த 20 நாட்களின் rate, இன்றைய rate-ஓடு ஒப்பிடும்போது
 எவ்வளவு வித்தியாசம் (▲ ஏறினது / ▼ இறங்கினது) என்பதும் தெரியும்.
 
+## Multiple Images per News
+
+செய்தி add/edit பண்ணும்போது, முதல் "படம்" field (featured image, cards/
+hero-ல் காட்டப்படும்) தவிர, "கூடுதல் படங்கள் (Multiple Images)" field-ல்
+ஒரே தடவையில் பல படங்களை select பண்ணலாம் (Ctrl/Cmd அழுத்தி). இந்த
+படங்கள் செய்தி content-ல் **பத்திகளுக்கு நடுவே தானாகவே பரவி**
+காட்டப்படும் (select பண்ணின வரிசைப்படி) — manual-ஆ எந்த padam எங்க
+வரணும்-ன்னு வைக்க தேவையில்லை. Edit page-ல் ஏற்கனவே சேர்த்த படங்களை
+பார்க்கலாம், தேவையில்லாததை தனித்தனியா (&times; பொத்தான்) நீக்கவும்
+செய்யலாம். Edit பண்ணும்போது புதிதா படம் சேர்த்தா, இருக்கிற படங்களுடன்
+கூடுதலா சேரும் (replace ஆகாது).
+
+## ஒவ்வொரு News-க்கும் தொடர்புடைய YouTube Video
+
+Article add/edit பண்ணும்போது "தொடர்புடைய YouTube Video" field-ல் ஒரு
+YouTube video link paste பண்ணலாம் (optional). Andha video செய்தி
+பக்கத்தில் content-க்கு கீழே தனியா ஒரு section-ஆ காட்டப்படும் —
+thumbnail-ல் click பண்ணா **site-லேயே** (redirect ஆகாம) periya popup-ல்
+play ஆகும். Video link காலியா விட்டா, andha section-ஏ காட்டப்படாது.
+இது `/videos` page-ல் தோன்றும் channel-oda முழு feed-ஐ விட வேற —
+இது ஒரு specific news-க்கு மட்டும் ஒரு specific video attach பண்றது.
 
 ## செய்தி Pin செய்ய (Fixed position)
 

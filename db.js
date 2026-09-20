@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS articles (
   published INTEGER DEFAULT 1,
   position INTEGER,
   pinned INTEGER DEFAULT 0,
+  youtube_video_id TEXT,
   views INTEGER DEFAULT 0,
   created_at TEXT DEFAULT (datetime('now')),
   updated_at TEXT DEFAULT (datetime('now')),
@@ -67,6 +68,15 @@ CREATE TABLE IF NOT EXISTS rate_history (
   silver REAL,
   created_at TEXT DEFAULT (datetime('now'))
 );
+
+CREATE TABLE IF NOT EXISTS article_images (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  article_id INTEGER NOT NULL,
+  image TEXT NOT NULL,
+  sort_order INTEGER DEFAULT 0,
+  created_at TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY(article_id) REFERENCES articles(id)
+);
 `);
 
 // Migration safety net: if articles table already existed (from an earlier
@@ -79,6 +89,10 @@ if (!articleCols.includes('position')) {
 if (!articleCols.includes('pinned')) {
   db.exec('ALTER TABLE articles ADD COLUMN pinned INTEGER DEFAULT 0');
   console.log('[setup] Added missing "pinned" column to articles table.');
+}
+if (!articleCols.includes('youtube_video_id')) {
+  db.exec('ALTER TABLE articles ADD COLUMN youtube_video_id TEXT');
+  console.log('[setup] Added missing "youtube_video_id" column to articles table.');
 }
 
 // Backfill position for any existing articles that don't have one yet, so
