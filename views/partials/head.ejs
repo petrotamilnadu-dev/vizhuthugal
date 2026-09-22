@@ -3,14 +3,16 @@
 <title><%= typeof pageTitle !== 'undefined' && pageTitle ? pageTitle + ' - ' : '' %><%= SITE_NAME %></title>
 <link rel="icon" href="/static/images/logo-ta.png">
 
-<!-- Add to Home Screen / PWA support -->
-<link rel="manifest" href="/static/manifest.json">
+<!-- Add to Home Screen / PWA support — admin pages get their own manifest
+     (start_url: /admin) so a shortcut added from any /admin/* page opens
+     straight into the admin panel instead of the public homepage. -->
+<link rel="manifest" href="<%= IS_ADMIN_PATH ? '/static/admin-manifest.json' : '/static/manifest.json' %>">
 <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
 <meta name="theme-color" content="#17233d">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Vizhuthugal">
+<meta name="apple-mobile-web-app-title" content="<%= IS_ADMIN_PATH ? 'V-Admin' : 'Vizhuthugal' %>">
 
 <%
   var _ogTitle = typeof ogTitle !== 'undefined' && ogTitle ? ogTitle : ((typeof pageTitle !== 'undefined' && pageTitle ? pageTitle + ' - ' : '') + SITE_NAME_EN);

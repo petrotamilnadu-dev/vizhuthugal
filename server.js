@@ -57,6 +57,7 @@ app.use((req, res, next) => {
   res.locals.LATEST_HEADLINES = db.prepare('SELECT title, slug FROM articles WHERE published = 1 ORDER BY created_at DESC LIMIT 6').all();
   res.locals.SITE_URL = `${req.protocol}://${req.get('host')}`;
   res.locals.CURRENT_URL = res.locals.SITE_URL + req.originalUrl;
+  res.locals.IS_ADMIN_PATH = req.path.startsWith('/admin');
   next();
 });
 

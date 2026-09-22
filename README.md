@@ -214,6 +214,13 @@ play ஆகும். Video link காலியா விட்டா, andha se
 தேவையான icon sizes (192px, 512px, Apple touch icon) தானாகவே
 generate பண்ணி வச்சிருக்கேன்.
 
+**Admin panel-க்கு தனி shortcut:** `/admin/login` (அல்லது எந்த
+`/admin/...` page-ஆனாலும்) "Add to Home Screen" பண்ணினா, அது **தனி
+shortcut** (V-Admin nu peru, main site shortcut-ஐ விட வேற icon
+label) — click பண்ணா நேரடியா admin panel-க்கே போகும், homepage-க்கு
+போகாது. Main website shortcut மற்றும் Admin shortcut ரெண்டையும்
+தனித்தனியா வெச்சுக்கலாம்.
+
 ## Image Watermark
 
 News article image (featured image) மற்றும் gallery images upload
