@@ -202,6 +202,18 @@ play ஆகும். Video link காலியா விட்டா, andha se
 இது `/videos` page-ல் தோன்றும் channel-oda முழு feed-ஐ விட வேற —
 இது ஒரு specific news-க்கு மட்டும் ஒரு specific video attach பண்றது.
 
+## Mobile Home Screen Shortcut (App-like)
+
+யாராவது site-ஐ mobile phone-ல் "Add to Home Screen" பண்ணினா:
+- Ungal logo icon-ஆ home screen-ல் தெரியும் (browser generic icon இல்ல)
+- Open பண்ணும்போது browser address bar இல்லாம, ஒரு app மாதிரியே
+  full-screen-ஆ திறக்கும் (Android Chrome-ல் "standalone" mode,
+  iPhone Safari-ல் "Add to Home Screen"-லேயும் இதே மாதிரி வேலை செய்யும்)
+
+இதுக்கு எந்த admin setup-உம் தேவையில்லை — logo image-ஐ வெச்சே
+தேவையான icon sizes (192px, 512px, Apple touch icon) தானாகவே
+generate பண்ணி வச்சிருக்கேன்.
+
 ## Image Watermark
 
 News article image (featured image) மற்றும் gallery images upload
