@@ -1,4 +1,6 @@
 const sharp = require('sharp');
+const path = require('path');
+const fs = require('fs');
 
 const WATERMARK_TEXT = 'vizhuthugal.live';
 
@@ -51,4 +53,53 @@ async function watermarkImage(filePath) {
   }
 }
 
-module.exports = { watermarkImage };
+/**
+ * WhatsApp/Facebook/Twitter link-preview crawlers only reliably read
+ * JPEG and PNG for og:image — AVIF and WebP (both allowed for regular
+ * uploads) are read inconsistently by them, which is why a shared news
+ * link sometimes shows a thumbnail and sometimes shows up as a plain
+ * text link with no preview at all, depending on which format the
+ * featured image happened to be uploaded in.
+ *
+ * This creates a `<file>.share.jpg` twin next to any non-jpg/png image,
+ * so link-sharing always has a safe JPEG to point og:image at while the
+ * site itself keeps using the original (smaller) AVIF/WebP file.
+ * Returns the twin's absolute path, or null if none was needed/possible.
+ */
+async function ensureShareableJpeg(filePath) {
+  const ext = path.extname(filePath).toLowerCase();
+  if (ext === '.jpg' || ext === '.jpeg' || ext === '.png') return null;
+
+  const outPath = filePath + '.share.jpg';
+  try {
+    if (fs.existsSync(outPath)) return outPath;
+    await sharp(filePath)
+      .rotate()
+      .flatten({ background: '#ffffff' })
+      .jpeg({ quality: 85 })
+      .toFile(outPath);
+    return outPath;
+  } catch (e) {
+    console.error('[watermark] share-jpeg failed for', filePath, '-', e.message);
+    return null;
+  }
+}
+
+/**
+ * Given the DB-stored image path (e.g. "/uploads/123.avif") and the
+ * absolute uploads directory, returns the best URL path to use for
+ * social-share previews — the JPEG twin if this format needs one
+ * (generating it on the fly for older articles that predate this
+ * feature), otherwise the original path as-is.
+ */
+async function shareableImagePath(dbImagePath, uploadsDir) {
+  if (!dbImagePath) return dbImagePath;
+  const ext = path.extname(dbImagePath).toLowerCase();
+  if (ext === '.jpg' || ext === '.jpeg' || ext === '.png') return dbImagePath;
+
+  const absPath = path.join(uploadsDir, path.basename(dbImagePath));
+  const twin = await ensureShareableJpeg(absPath);
+  return twin ? dbImagePath + '.share.jpg' : dbImagePath;
+}
+
+module.exports = { watermarkImage, ensureShareableJpeg, shareableImagePath };

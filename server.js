@@ -9,7 +9,7 @@ const { db, UPLOADS_DIR, nextTopPosition } = require('./db');
 const { getSetting, setSetting } = require('./settings');
 const { getLatestVideos: getInstagramVideos } = require('./instagram');
 const { getLatestVideos: getYoutubeVideos, getVideoInfo, getLiveVideo, extractVideoId: extractYoutubeId } = require('./youtube');
-const { watermarkImage } = require('./watermark');
+const { watermarkImage, ensureShareableJpeg, shareableImagePath } = require('./watermark');
 
 const app = express();
 app.set('trust proxy', 1); // needed on Render so req.protocol reports https correctly (for og:image URLs etc.)
@@ -318,7 +318,11 @@ app.get('/news/:slug', async (req, res) => {
 
   const ogDescription = (article.summary && article.summary.trim())
     || (article.content || '').replace(/\s+/g, ' ').trim().slice(0, 160);
-  const ogImage = article.image ? (res.locals.SITE_URL + article.image) : undefined;
+  // AVIF/WebP featured images get swapped for an auto-generated JPEG twin
+  // here — WhatsApp/Facebook's link-preview crawlers don't reliably read
+  // those formats, which is why shares sometimes had no thumbnail at all.
+  const ogImagePath = article.image ? await shareableImagePath(article.image, UPLOADS_DIR) : null;
+  const ogImage = ogImagePath ? (res.locals.SITE_URL + ogImagePath) : undefined;
 
   res.render('article', {
     article,
@@ -433,6 +437,11 @@ app.post('/admin/articles/new', requireAdmin, articleUpload, async (req, res) =>
   const allNewFiles = [imageFile, ...galleryFiles].filter(Boolean);
   await Promise.all(allNewFiles.map(f => watermarkImage(path.join(UPLOADS_DIR, f.filename))));
 
+  // WhatsApp/Facebook link-preview crawlers don't reliably read AVIF/WebP —
+  // pre-generate a JPEG twin of the featured image (after watermarking) so
+  // shared links always get a working thumbnail, whatever format was uploaded.
+  if (imageFile) await ensureShareableJpeg(path.join(UPLOADS_DIR, imageFile.filename));
+
   res.redirect('/admin');
 });
 
@@ -487,6 +496,11 @@ app.post('/admin/articles/:id/edit', requireAdmin, articleUpload, async (req, re
 
   const allNewFiles = [imageFile, ...galleryFiles].filter(Boolean);
   await Promise.all(allNewFiles.map(f => watermarkImage(path.join(UPLOADS_DIR, f.filename))));
+
+  // WhatsApp/Facebook link-preview crawlers don't reliably read AVIF/WebP —
+  // pre-generate a JPEG twin of the featured image (after watermarking) so
+  // shared links always get a working thumbnail, whatever format was uploaded.
+  if (imageFile) await ensureShareableJpeg(path.join(UPLOADS_DIR, imageFile.filename));
 
   res.redirect('/admin');
 });
