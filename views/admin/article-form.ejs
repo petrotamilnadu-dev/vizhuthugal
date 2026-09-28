@@ -43,9 +43,11 @@
           <% galleryImages.forEach(function(img) { %>
             <div class="gallery-preview-item">
               <img src="<%= img.image %>" alt="">
-              <form method="post" action="/admin/articles/<%= article.id %>/images/<%= img.id %>/delete" onsubmit="return confirm('இந்த படத்தை நீக்கவா?')">
-                <button type="submit" class="gallery-remove-btn" aria-label="Remove">&times;</button>
-              </form>
+              <button type="submit" class="gallery-remove-btn" aria-label="Remove"
+                      formaction="/admin/articles/<%= article.id %>/images/<%= img.id %>/delete"
+                      formmethod="post"
+                      formnovalidate
+                      onclick="return confirm('இந்த படத்தை நீக்கவா?')">&times;</button>
             </div>
           <% }); %>
         </div>
